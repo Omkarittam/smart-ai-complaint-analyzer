@@ -1,0 +1,2925 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Complaint Analyzer</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ================= GLOBAL ================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background:
+                linear-gradient(135deg,
+                    #0f172a,
+                    #111827,
+                    #0b1120);
+            color: white;
+            min-height: 100vh;
+            transition: 0.3s;
+        }
+
+        body.light {
+            background:
+                linear-gradient(135deg,
+                    #f8fafc,
+                    #e2e8f0,
+                    #f1f5f9);
+            color: #0f172a;
+        }
+
+        button,
+        input,
+        textarea,
+        select {
+            font-family: inherit;
+        }
+
+        /* ================= TOPBAR ================= */
+
+        .topbar {
+            width: 100%;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            border-bottom: 1px solid #1f2937;
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        body.light .topbar {
+            background: rgba(255, 255, 255, 0.92);
+            border-color: #dbeafe;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: #60a5fa;
+            white-space: nowrap;
+        }
+
+        body.light .logo {
+            color: #0f172a;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .top-right {
+            color: #94a3b8;
+            font-size: 15px;
+            white-space: nowrap;
+        }
+
+        body.light .top-right {
+            color: #334155;
+        }
+
+        .theme-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: #1e293b;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .theme-btn:hover {
+            background: #334155;
+        }
+
+        body.light .theme-btn {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        /* ================= DASHBOARD ================= */
+
+        .dashboard {
+            width: 95%;
+            max-width: 1500px;
+            margin: 24px auto;
+            display: grid;
+            grid-template-columns: 330px 1fr;
+            gap: 24px;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 26px;
+            padding: 24px;
+            height: fit-content;
+            position: sticky;
+            top: 95px;
+        }
+
+        body.light .sidebar {
+            background: white;
+            border-color: #dbeafe;
+        }
+
+        .profile {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: auto;
+            margin-bottom: 18px;
+            border: 4px solid #3b82f6;
+            box-shadow:
+                0 0 30px rgba(59, 130, 246, 0.35);
+            background: #0f172a;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile h2 {
+            font-size: 30px;
+            margin-bottom: 6px;
+            word-break: break-word;
+        }
+
+        body.light .profile h2 {
+            color: #0f172a;
+        }
+
+        .profile p {
+            color: #94a3b8;
+            font-size: 14px;
+            text-transform: capitalize;
+        }
+
+        .user-details {
+            margin-top: 20px;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 18px;
+            padding: 18px;
+        }
+
+        body.light .user-details {
+            background: #f8fafc;
+            border-color: #dbeafe;
+        }
+
+        .detail-item {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        body.light .detail-label {
+            color: #64748b;
+        }
+
+        .detail-value {
+            font-size: 15px;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        body.light .detail-value {
+            color: #0f172a;
+        }
+
+        .profile-btn {
+            width: 100%;
+            height: 46px;
+            border: none;
+            border-radius: 14px;
+            margin-top: 18px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .profile-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .logout-btn {
+            width: 100%;
+            height: 46px;
+            border: none;
+            border-radius: 14px;
+            margin-top: 22px;
+            background: #ef4444;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card-container {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 24px;
+            padding: 24px;
+        }
+
+        body.light .card-container {
+            background: white;
+            border-color: #dbeafe;
+        }
+
+        .section-title {
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        body.light .section-title {
+            color: #0f172a;
+        }
+
+        /* ================= STATS ================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: #1a2436;
+            border: 1px solid #273449;
+            border-radius: 18px;
+            padding: 20px;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        body.light .stat-card {
+            background: #f8fafc;
+            border-color: #dbeafe;
+        }
+
+        .stat-card p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        body.light .stat-card p {
+            color: #64748b;
+        }
+
+        .stat-card h3 {
+            margin-top: 10px;
+            font-size: 30px;
+        }
+
+        body.light .stat-card h3 {
+            color: #0f172a;
+        }
+
+        /* ================= FORM ================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        textarea,
+        input,
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: white;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        body.light textarea,
+        body.light input,
+        body.light select {
+            background: #f8fafc;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+
+        textarea {
+            resize: none;
+            min-height: 140px;
+            margin-top: 16px;
+            line-height: 1.7;
+        }
+
+        textarea::placeholder,
+        input::placeholder {
+            color: #94a3b8;
+        }
+
+        body.light textarea::placeholder,
+        body.light input::placeholder {
+            color: #64748b;
+        }
+
+        textarea:focus,
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow:
+                0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .profile-group {
+            margin-top: 14px;
+        }
+
+        .profile-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        body.light .profile-group label {
+            color: #475569;
+        }
+
+        /* ================= DROPDOWN ================= */
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-selected {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        body.light .dropdown-selected {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+
+        .dropdown-options {
+            position: absolute;
+            width: 100%;
+            background: #111827;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            margin-top: 6px;
+            overflow: hidden;
+            display: none;
+            z-index: 999;
+            max-height: 330px;
+            overflow-y: auto;
+        }
+
+        body.light .dropdown-options {
+            background: white;
+            border-color: #cbd5e1;
+        }
+
+        .dropdown.active .dropdown-options {
+            display: block;
+        }
+
+        .dropdown-options div {
+            padding: 12px 16px;
+            cursor: pointer;
+        }
+
+        body.light .dropdown-options div {
+            color: #0f172a;
+        }
+
+        .dropdown-options div:hover {
+            background: #1e293b;
+        }
+
+        body.light .dropdown-options div:hover {
+            background: #f1f5f9;
+        }
+
+        .group {
+            color: #60a5fa !important;
+            font-size: 12px;
+            font-weight: 700;
+            background: transparent !important;
+            cursor: default !important;
+        }
+
+        #charCount {
+            margin-top: 8px;
+            text-align: right;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        body.light #charCount {
+            color: #64748b;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        button {
+            height: 46px;
+            border: none;
+            border-radius: 14px;
+            padding: 0 24px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .voice-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .submit-btn {
+            background: #06b6d4;
+            color: white;
+        }
+
+        .clear-btn {
+            background: #64748b;
+            color: white;
+        }
+
+        /* ================= UPLOAD MEDIA ================= */
+
+        .upload-media-wrapper {
+            position: relative;
+            margin-top: 18px;
+        }
+
+        .upload-media-btn {
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+            transition: 0.3s;
+        }
+
+        .upload-media-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(37, 99, 235, 0.35);
+        }
+
+        .media-menu {
+            display: none;
+            margin-top: 14px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 18px;
+            padding: 16px;
+            animation: mediaPop 0.25s ease;
+        }
+
+        body.light .media-menu {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .media-menu.active {
+            display: block;
+        }
+
+        .media-main-options,
+        .media-sub-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .media-sub-options {
+            display: none;
+        }
+
+        .media-main-options button,
+        .media-sub-options button {
+            height: 48px;
+            border: none;
+            border-radius: 14px;
+            background: #1e293b;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        body.light .media-main-options button,
+        body.light .media-sub-options button {
+            background: white;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+        }
+
+        .media-main-options button:hover,
+        .media-sub-options button:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        .media-sub-options .back-btn {
+            grid-column: span 2;
+            background: #ef4444;
+        }
+
+        .media-sub-options .back-btn:hover {
+            background: #dc2626;
+        }
+
+        .selected-media-preview {
+            margin-top: 14px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        body.light .selected-media-preview {
+            color: #475569;
+        }
+
+        .selected-media-preview span {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #1e293b;
+            color: #cbd5e1;
+            font-size: 13px;
+            word-break: break-word;
+        }
+
+        body.light .selected-media-preview span {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        @keyframes mediaPop {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ================= SEARCH ================= */
+
+        .history-top {
+            display: grid;
+            grid-template-columns: 1fr 190px;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .search-box {
+            margin-bottom: 0;
+        }
+
+        /* ================= COMPLAINT CARD ================= */
+
+        .complaint-card {
+            background: #1a2436;
+            border-radius: 18px;
+            padding: 20px;
+            margin-top: 16px;
+            border-left: 5px solid #3b82f6;
+            transition: 0.3s;
+        }
+
+        body.light .complaint-card {
+            background: #f8fafc;
+            border-color: #dbeafe;
+        }
+
+        .complaint-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 600;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        body.light .card-title {
+            color: #0f172a;
+        }
+
+        .card-meta {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-top: 10px;
+            line-height: 1.7;
+        }
+
+        body.light .card-meta {
+            color: #475569;
+        }
+
+        .card-time {
+            margin-top: 8px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        body.light .card-time {
+            color: #475569;
+        }
+
+        .complaint-image,
+        .complaint-video {
+            width: 100%;
+            max-height: 320px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-top: 14px;
+            border: 1px solid #334155;
+            background: #0f172a;
+        }
+
+        body.light .complaint-image,
+        body.light .complaint-video {
+            border-color: #cbd5e1;
+        }
+
+        .empty {
+            padding: 18px;
+            border-radius: 16px;
+            background: #1e293b;
+            color: #cbd5e1;
+            text-align: center;
+        }
+
+        body.light .empty {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status {
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .pending {
+            background: #f59e0b;
+        }
+
+        .accepted {
+            background: #2563eb;
+        }
+
+        .resolved {
+            background: #22c55e;
+        }
+
+        .rejected {
+            background: #ef4444;
+        }
+
+        /* ================= AI BOX ================= */
+
+        .ai-box {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 16px;
+            background: #0f172a;
+            border: 1px solid #334155;
+        }
+
+        body.light .ai-box {
+            background: white;
+            border-color: #dbeafe;
+        }
+
+        .ai-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 12px;
+        }
+
+        body.light .ai-title {
+            color: #2563eb;
+        }
+
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .ai-item {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 14px;
+            padding: 12px;
+        }
+
+        body.light .ai-item {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        .ai-label {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+
+        body.light .ai-label {
+            color: #64748b;
+        }
+
+        .ai-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e5e7eb;
+            word-break: break-word;
+        }
+
+        body.light .ai-value {
+            color: #0f172a;
+        }
+
+        .ai-summary {
+            grid-column: span 2;
+        }
+
+        .severity-bar {
+            width: 100%;
+            height: 9px;
+            background: #1e293b;
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        body.light .severity-bar {
+            background: #e2e8f0;
+        }
+
+        .severity-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
+        }
+
+        .duplicate-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+
+        .duplicate-yes {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .duplicate-no {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* ================= TOAST ================= */
+
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #111827;
+            border-left: 4px solid #3b82f6;
+            padding: 14px 18px;
+            border-radius: 12px;
+            display: none;
+            z-index: 99999;
+            max-width: 320px;
+            line-height: 1.5;
+        }
+
+        body.light #toast {
+            background: white;
+            color: #0f172a;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+        }
+
+        /* ================= PROFILE MODAL ================= */
+
+        .profile-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            padding: 20px;
+        }
+
+        .profile-box {
+            width: 90%;
+            max-width: 420px;
+            background: #111827;
+            border-radius: 22px;
+            padding: 28px;
+            border: 1px solid #334155;
+        }
+
+        body.light .profile-box {
+            background: white;
+        }
+
+        .profile-box h2 {
+            margin-bottom: 20px;
+            font-size: 26px;
+        }
+
+        body.light .profile-box h2 {
+            color: #0f172a;
+        }
+
+        .profile-box input {
+            margin-top: 14px;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .save-btn {
+            flex: 1;
+            background: #22c55e;
+            color: white;
+        }
+
+        .cancel-btn {
+            flex: 1;
+            background: #ef4444;
+            color: white;
+        }
+
+        /* ================= CAMERA MODAL ================= */
+
+        .camera-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999999;
+            padding: 20px;
+        }
+
+        .camera-box {
+            width: 92%;
+            max-width: 560px;
+            background: #111827;
+            border: 1px solid #334155;
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        body.light .camera-box {
+            background: white;
+        }
+
+        .camera-box h2 {
+            margin-bottom: 18px;
+            font-size: 24px;
+        }
+
+        body.light .camera-box h2 {
+            color: #0f172a;
+        }
+
+        #cameraPreview {
+            width: 100%;
+            max-height: 360px;
+            background: black;
+            border-radius: 18px;
+            object-fit: cover;
+        }
+
+        .camera-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .capture-btn {
+            flex: 1;
+            background: #22c55e;
+            color: white;
+        }
+
+        .stop-btn {
+            flex: 1;
+            background: #ef4444;
+            color: white;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width:1100px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:1000px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                top: 0;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+        }
+
+        @media(max-width:700px) {
+            .top-right {
+                display: none;
+            }
+
+            .history-top {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-summary {
+                grid-column: span 1;
+            }
+        }
+
+        @media(max-width:600px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .media-main-options,
+            .media-sub-options {
+                grid-template-columns: 1fr;
+            }
+
+            .media-sub-options .back-btn {
+                grid-column: span 1;
+            }
+
+            .btn-row,
+            .profile-actions,
+            .camera-actions {
+                flex-direction: column;
+            }
+
+            .section-title {
+                font-size: 26px;
+            }
+
+            .card-top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .topbar {
+                height: auto;
+                min-height: 70px;
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+
+        <div class="logo">
+            AI Complaint Analyzer
+        </div>
+
+        <div class="top-actions">
+
+            <div class="top-right">
+                Smart Campus Portal
+            </div>
+
+            <button id="themeToggle" class="theme-btn">
+                🌙
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard">
+
+        <div class="sidebar">
+
+            <div class="profile">
+
+                <div class="avatar">
+                    <img id="profilePreview" src="" alt="Profile">
+                </div>
+
+                <h2 id="userName"></h2>
+                <p id="userRole"></p>
+
+            </div>
+
+            <div class="user-details">
+
+                <div class="detail-item">
+                    <span class="detail-label">👤 Name</span>
+                    <span class="detail-value" id="detailName">Student</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">🆔 PRN</span>
+                    <span class="detail-value" id="detailPRN">Not Added</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">🏫 Department</span>
+                    <span class="detail-value" id="detailDept">Not Added</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">📘 Course</span>
+                    <span class="detail-value" id="detailCourse">Not Added</span>
+                </div>
+
+            </div>
+
+            <button class="profile-btn" onclick="openProfileModal()">
+                ✏️ Update Profile
+            </button>
+
+            <button class="logout-btn" onclick="logout()">
+                Logout
+            </button>
+
+        </div>
+
+        <div class="main-content">
+
+            <div class="stats">
+
+                <div class="stat-card">
+                    <p>Total Complaints</p>
+                    <h3 id="totalCount">0</h3>
+                </div>
+
+                <div class="stat-card">
+                    <p>Resolved</p>
+                    <h3 id="resolvedCount">0</h3>
+                </div>
+
+                <div class="stat-card">
+                    <p>Pending</p>
+                    <h3 id="pendingCount">0</h3>
+                </div>
+
+                <div class="stat-card">
+                    <p>Urgent / High</p>
+                    <h3 id="urgentCount">0</h3>
+                </div>
+
+            </div>
+
+            <div class="card-container">
+
+                <div class="section-title">
+                    📝 Submit Complaint
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="dropdown" id="categoryDropdown">
+
+                        <div class="dropdown-selected">
+                            General
+                        </div>
+
+                        <div class="dropdown-options">
+
+                            <div class="group">📌 General</div>
+                            <div data-value="General">General</div>
+
+                            <div class="group">🎓 Academics</div>
+                            <div data-value="Academics">Academics</div>
+                            <div data-value="Exam & Results">Exam & Results</div>
+                            <div data-value="Attendance">Attendance</div>
+                            <div data-value="Assignments">Assignments</div>
+                            <div data-value="Timetable">Timetable</div>
+                            <div data-value="Teaching Issues">Teaching Issues</div>
+                            <div data-value="Faculty Behaviour">Faculty Behaviour</div>
+
+                            <div class="group">🏫 Infrastructure</div>
+                            <div data-value="Infrastructure">Infrastructure</div>
+                            <div data-value="Classroom">Classroom</div>
+                            <div data-value="Washroom">Washroom</div>
+                            <div data-value="Water Supply">Water Supply</div>
+                            <div data-value="Electricity">Electricity</div>
+                            <div data-value="Library">Library</div>
+                            <div data-value="Lab">Lab</div>
+
+                            <div class="group">👨‍🏫 Faculty & Staff</div>
+                            <div data-value="Faculty & Staff">Faculty & Staff</div>
+                            <div data-value="Staff Behaviour">Staff Behaviour</div>
+                            <div data-value="Office Staff">Office Staff</div>
+
+                            <div class="group">🍴 Canteen</div>
+                            <div data-value="Canteen">Canteen</div>
+                            <div data-value="Food Quality">Food Quality</div>
+                            <div data-value="Hygiene">Hygiene</div>
+                            <div data-value="Pricing">Pricing</div>
+
+                            <div class="group">🏨 Hostel</div>
+                            <div data-value="Hostel">Hostel</div>
+                            <div data-value="Room Issues">Room Issues</div>
+                            <div data-value="Hostel Cleaning">Hostel Cleaning</div>
+                            <div data-value="Hostel Food">Hostel Food</div>
+
+                            <div class="group">💻 Technical / IT</div>
+                            <div data-value="Technical / IT">Technical / IT</div>
+                            <div data-value="WiFi">WiFi</div>
+                            <div data-value="Portal Issues">Portal Issues</div>
+                            <div data-value="Lab Systems">Lab Systems</div>
+
+                            <div class="group">🛡️ Security & Safety</div>
+                            <div data-value="Security & Safety">Security & Safety</div>
+                            <div data-value="Security">Security</div>
+                            <div data-value="Safety">Safety</div>
+                            <div data-value="Harassment">Harassment</div>
+                            <div data-value="Ragging">Ragging</div>
+
+                            <div class="group">💰 Fees & Scholarships</div>
+                            <div data-value="Fees & Scholarships">Fees & Scholarships</div>
+                            <div data-value="Fees">Fees</div>
+                            <div data-value="Scholarship">Scholarship</div>
+                            <div data-value="Payment Issue">Payment Issue</div>
+
+                        </div>
+
+                    </div>
+                    <div class="dropdown">
+                    <div class="dropdown-selected" id="aiPriorityPreview">
+                    AI will auto-detect priority
+                    </div>
+    </div>
+
+                </div>
+
+                <textarea id="complaint" maxlength="300" placeholder="Describe your issue..."></textarea>
+
+                <p id="charCount">0/300</p>
+
+                <div class="btn-row">
+
+                    <button class="voice-btn" onclick="startVoice()">
+                        🎤 Speak
+                    </button>
+
+                    <button class="clear-btn" onclick="clearComplaintForm()">
+                        Clear
+                    </button>
+
+                    <button class="submit-btn" id="submitBtn" onclick="submitComplaint()">
+                        Submit
+                    </button>
+
+                </div>
+
+                <div class="upload-media-wrapper">
+
+                    <button type="button" class="upload-media-btn" onclick="toggleMediaMenu()">
+                        📎 Upload Media
+                    </button>
+
+                    <div class="media-menu" id="mediaMenu">
+
+                        <div class="media-main-options" id="mediaMainOptions">
+
+                            <button type="button" onclick="showImageOptions()">
+                                📷 Image
+                            </button>
+
+                            <button type="button" onclick="showVideoOptions()">
+                                🎥 Video
+                            </button>
+
+                        </div>
+
+                        <div class="media-sub-options" id="imageOptions">
+
+                            <button type="button" onclick="openImageCamera()">
+                                📸 Open Camera
+                            </button>
+
+                            <button type="button" onclick="chooseImageFromDevice()">
+                                🖼️ Choose From Device
+                            </button>
+
+                            <button type="button" class="back-btn" onclick="backToMediaMain()">
+                                ⬅ Back
+                            </button>
+
+                        </div>
+
+                        <div class="media-sub-options" id="videoOptions">
+
+                            <button type="button" onclick="openVideoCamera()">
+                                🎬 Open Camera
+                            </button>
+
+                            <button type="button" onclick="chooseVideoFromDevice()">
+                                📁 Choose From Device
+                            </button>
+
+                            <button type="button" class="back-btn" onclick="backToMediaMain()">
+                                ⬅ Back
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <input type="file" id="image" accept="image/*" hidden>
+                    <input type="file" id="imageCamera" accept="image/*" capture="environment" hidden>
+
+                    <input type="file" id="video" accept="video/*" hidden>
+                    <input type="file" id="videoCamera" accept="video/*" capture="environment" hidden>
+
+                    <div class="selected-media-preview" id="selectedMediaPreview"></div>
+
+                </div>
+
+            </div>
+
+            <div class="card-container">
+
+                <div class="section-title">
+                    📋 Complaint History
+                </div>
+
+                <div class="history-top">
+
+                    <input class="search-box" id="searchBox" placeholder="Search complaints...">
+
+                    <select id="statusFilter" onchange="filterComplaints()">
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+
+                </div>
+
+                <div id="complaints"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= PROFILE MODAL ================= -->
+
+    <div class="profile-modal" id="profileModal">
+
+        <div class="profile-box">
+
+            <h2>
+                Update Profile
+            </h2>
+
+            <input type="text" id="profileName" placeholder="Enter Name">
+
+            <input type="text" id="profilePRN" placeholder="Enter PRN Number">
+
+            <input type="file" id="profileImage" accept="image/*" hidden>
+
+            <div class="profile-group">
+
+                <label>Department</label>
+
+                <select id="profileDept">
+
+                    <option value="School of Computing">School of Computing</option>
+                    <option value="School of Business">School of Business</option>
+                    <option value="School of Pharmacy">School of Pharmacy</option>
+                    <option value="School of Design">School of Design</option>
+
+                </select>
+
+            </div>
+
+            <div class="profile-group">
+
+                <label>Course</label>
+
+                <select id="profileCourse"></select>
+
+            </div>
+
+            <button type="button" class="profile-btn" onclick="document.getElementById('profileImage').click()">
+                📷 Choose Profile Photo
+            </button>
+
+            <div class="profile-actions">
+
+                <button class="save-btn" onclick="saveProfile()">
+                    Save
+                </button>
+
+                <button class="cancel-btn" onclick="closeProfileModal()">
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= CAMERA MODAL ================= -->
+
+    <div class="camera-modal" id="cameraModal">
+
+        <div class="camera-box">
+
+            <h2 id="cameraTitle">Camera</h2>
+
+            <video id="cameraPreview" autoplay playsinline></video>
+
+            <canvas id="cameraCanvas" hidden></canvas>
+
+            <div class="camera-actions">
+
+                <button type="button" class="capture-btn" id="captureBtn">
+                    📸 Capture
+                </button>
+
+                <button type="button" class="stop-btn" onclick="closeCameraModal()">
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        /* ================= COURSE MAP ================= */
+
+        const courseMap = {
+
+            "School of Computing": [
+                "IT",
+                "AIML",
+                "CSE",
+                "MCA",
+                "BCA"
+            ],
+
+            "School of Business": [
+                "BBA",
+                "MBA",
+                "BCom"
+            ],
+
+            "School of Pharmacy": [
+                "BPharm"
+            ],
+
+            "School of Design": [
+                "B.Des"
+            ]
+        };
+
+        document
+            .getElementById("profileDept")
+            .onchange = function () {
+
+                let dept = this.value;
+
+                let course =
+                    document.getElementById(
+                        "profileCourse"
+                    );
+
+                course.innerHTML = "";
+
+                if (!courseMap[dept]) {
+                    return;
+                }
+
+                courseMap[dept].forEach(c => {
+
+                    course.innerHTML += `
+
+                        <option value="${escapeHTML(c)}">
+                            ${escapeHTML(c)}
+                        </option>
+
+                    `;
+                });
+            };
+
+        document
+            .getElementById("profileDept")
+            .dispatchEvent(
+                new Event('change')
+            );
+
+        /* ================= USER DATA ================= */
+
+        const user =
+            localStorage.getItem("user") ||
+            localStorage.getItem("profile_name") ||
+            "Student";
+
+        const role =
+            localStorage.getItem("role") ||
+            "student";
+
+        document.getElementById("userName")
+            .innerText = user;
+
+        document.getElementById("userRole")
+            .innerText = role;
+
+        /* ================= PROFILE IMAGE ================= */
+
+        const savedImage =
+            localStorage.getItem("profile_image");
+
+        if (savedImage) {
+
+            profilePreview.src = savedImage;
+
+        } else {
+
+            profilePreview.src =
+                "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+        }
+
+        /* ================= THEME ================= */
+
+        const toggleBtn =
+            document.getElementById("themeToggle");
+
+        if (localStorage.getItem("theme") === "light") {
+
+            document.body.classList.add("light");
+
+            toggleBtn.innerText = "☀️";
+        }
+
+        toggleBtn.onclick = () => {
+
+            document.body.classList.toggle("light");
+
+            if (document.body.classList.contains("light")) {
+
+                localStorage.setItem(
+                    "theme",
+                    "light"
+                );
+
+                toggleBtn.innerText = "☀️";
+
+            } else {
+
+                localStorage.setItem(
+                    "theme",
+                    "dark"
+                );
+
+                toggleBtn.innerText = "🌙";
+            }
+        };
+
+        /* ================= CHAR COUNT ================= */
+
+      complaint.oninput = () => {
+        charCount.innerText =
+        complaint.value.length + "/300";
+        const priority = getPriority();
+        const preview =
+        document.getElementById("aiPriorityPreview");
+
+    if (preview) {
+        preview.innerText = "AI Priority: " + priority;
+    }
+};
+
+        /* ================= TOAST ================= */
+
+        function showToast(msg) {
+
+            toast.innerText = msg;
+
+            toast.style.display = "block";
+
+            setTimeout(() => {
+
+                toast.style.display = "none";
+
+            }, 3000);
+        }
+
+        /* ================= ESCAPE HTML ================= */
+
+        function escapeHTML(value) {
+
+            if (value === null || value === undefined) {
+                return "";
+            }
+
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        /* ================= LOAD PROFILE ================= */
+
+        async function loadProfile() {
+
+            try {
+
+                const email =
+                    localStorage.getItem("email");
+
+                if (!email) {
+                    return;
+                }
+
+                const res =
+                    await fetch('/get_profile/' + encodeURIComponent(email));
+
+                const data =
+                    await res.json();
+
+                detailName.innerText =
+                    data.name || "Student";
+
+                detailPRN.innerText =
+                    data.identifier || "Not Added";
+
+                detailDept.innerText =
+                    data.department || "Not Added";
+
+                detailCourse.innerText =
+                    data.course || "Not Added";
+
+                profilePreview.src =
+                    data.profile_image ||
+                    "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+                userName.innerText =
+                    data.name || user;
+
+                localStorage.setItem(
+                    "profile_name",
+                    data.name || user
+                );
+
+                localStorage.setItem(
+                    "profile_prn",
+                    data.identifier || ""
+                );
+
+                localStorage.setItem(
+                    "identifier",
+                    data.identifier || localStorage.getItem("identifier") || ""
+                );
+
+                localStorage.setItem(
+                    "profile_dept",
+                    data.department || ""
+                );
+
+                localStorage.setItem(
+                    "profile_course",
+                    data.course || ""
+                );
+
+                localStorage.setItem(
+                    "profile_image",
+                    data.profile_image || ""
+                );
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        }
+
+        /* ================= PROFILE MODAL ================= */
+
+        function openProfileModal() {
+
+            profileModal.style.display = "flex";
+
+            profileName.value =
+                localStorage.getItem("profile_name") ||
+                localStorage.getItem("user") ||
+                "";
+
+            profilePRN.value =
+                localStorage.getItem("profile_prn") ||
+                localStorage.getItem("identifier") ||
+                "";
+
+            const savedDept =
+                localStorage.getItem("profile_dept") ||
+                "School of Computing";
+
+            profileDept.value = savedDept;
+
+            profileDept.dispatchEvent(new Event('change'));
+
+            profileCourse.value =
+                localStorage.getItem("profile_course") ||
+                profileCourse.options[0]?.value ||
+                "";
+        }
+
+        function closeProfileModal() {
+
+            profileModal.style.display = "none";
+        }
+
+        /* ================= SAVE PROFILE ================= */
+
+        async function saveProfile() {
+
+            if (!profileName.value.trim()) {
+                showToast("Please enter your name");
+                return;
+            }
+
+            if (!profilePRN.value.trim()) {
+                showToast("Please enter your PRN / Identifier");
+                return;
+            }
+
+            let imageData =
+                localStorage.getItem("profile_image");
+
+            const imageFile =
+                document.getElementById("profileImage").files[0];
+
+            if (imageFile) {
+
+                const reader = new FileReader();
+
+                reader.onload = async function (e) {
+
+                    imageData = e.target.result;
+
+                    profilePreview.src = imageData;
+
+                    await sendProfile(imageData);
+                };
+
+                reader.readAsDataURL(imageFile);
+
+            } else {
+
+                await sendProfile(imageData);
+            }
+        }
+
+        /* ================= SEND PROFILE ================= */
+
+        async function sendProfile(imageData) {
+
+            try {
+
+                const body = {
+
+                    email:
+                        localStorage.getItem("email"),
+
+                    name:
+                        profileName.value.trim(),
+
+                    identifier:
+                        profilePRN.value.trim(),
+
+                    department:
+                        profileDept.value,
+
+                    course:
+                        profileCourse.value,
+
+                    profile_image:
+                        imageData || ""
+                };
+
+                const res = await fetch('/update_profile', {
+
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify(body)
+                });
+
+                await res.json();
+
+                localStorage.setItem(
+                    "profile_image",
+                    imageData || ""
+                );
+
+                localStorage.setItem(
+                    "profile_name",
+                    profileName.value.trim()
+                );
+
+                localStorage.setItem(
+                    "profile_prn",
+                    profilePRN.value.trim()
+                );
+
+                localStorage.setItem(
+                    "identifier",
+                    profilePRN.value.trim()
+                );
+
+                localStorage.setItem(
+                    "profile_dept",
+                    profileDept.value
+                );
+
+                localStorage.setItem(
+                    "profile_course",
+                    profileCourse.value
+                );
+
+                userName.innerText =
+                    profileName.value.trim();
+
+                loadProfile();
+
+                closeProfileModal();
+
+                showToast("Profile Updated ✅");
+
+                loadUserComplaints();
+
+            } catch (err) {
+
+                console.log(err);
+
+                showToast("Profile update failed ❌");
+            }
+        }
+
+        loadProfile();
+
+        /* ================= DROPDOWN ================= */
+
+        function initDropdown(id) {
+
+            const dd =
+                document.getElementById(id);
+
+            const selected =
+                dd.querySelector(".dropdown-selected");
+
+            const options =
+                dd.querySelectorAll("[data-value]");
+
+            let value =
+                selected.innerText.trim();
+
+            selected.onclick = () => {
+
+                dd.classList.toggle("active");
+            };
+
+            options.forEach(o => {
+
+                o.onclick = () => {
+
+                    selected.innerText =
+                        o.innerText;
+
+                    value =
+                        o.dataset.value;
+
+                    dd.classList.remove("active");
+                };
+            });
+
+            return () => value;
+        }
+
+        const getCategory =
+            initDropdown("categoryDropdown");
+
+
+
+        function getPriority() {
+
+    const text = complaint.value.toLowerCase().trim();
+
+    if (!text) {
+        return "Auto";
+    }
+
+    const urgentWords = [
+        "ragging", "harassment", "threat", "fight", "unsafe",
+        "emergency", "fire", "accident", "blood", "injury",
+        "violence", "abuse", "danger", "security", "attack",
+        "maar", "marpit", "chhedchhad", "dangerous"
+    ];
+
+    const highWords = [
+        "no food", "food", "canteen", "hygiene", "bad food",
+        "no water", "water", "washroom", "toilet", "dirty",
+        "no electricity", "electricity", "fan", "light",
+        "wifi", "internet", "not working", "broken",
+        "exam", "result", "marks", "fees", "payment",
+        "lab", "portal", "system", "leakage",
+        "khana", "paani", "bijli", "ganda", "band"
+    ];
+
+    const mediumWords = [
+        "late", "delay", "slow", "issue", "problem",
+        "request", "help", "assignment", "attendance",
+        "classroom", "library", "teacher", "faculty",
+        "staff", "timetable"
+    ];
+
+    if (urgentWords.some(word => text.includes(word))) {
+        return "Urgent";
+    }
+
+    if (highWords.some(word => text.includes(word))) {
+        return "High";
+    }
+
+    if (mediumWords.some(word => text.includes(word))) {
+        return "Medium";
+    }
+
+    if (text.length > 120) {
+        return "High";
+    }
+
+    if (text.length > 40) {
+        return "Medium";
+    }
+
+    return "Low";
+}
+        /* ================= VOICE ================= */
+
+        function startVoice() {
+
+            const SpeechRecognitionAPI =
+                window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognitionAPI) {
+                alert("Speech recognition is not supported in this browser");
+                return;
+            }
+
+            const rec = new SpeechRecognitionAPI();
+
+            rec.lang = "en-IN";
+
+            rec.start();
+
+            rec.onresult = e => {
+
+                complaint.value +=
+                    " " + e.results[0][0].transcript;
+
+                complaint.value =
+                    complaint.value.trim();
+
+                const priority = getPriority();
+                const preview = document.getElementById("aiPriorityPreview");
+
+                if (preview) {
+                    preview.innerText = "AI Priority: " + priority;
+                }
+            };
+
+            rec.onerror = () => {
+                showToast("Voice input failed ❌");
+            };
+        }
+
+        /* ================= UPLOAD MEDIA OPTIONS ================= */
+
+        function toggleMediaMenu() {
+
+            const mediaMenu =
+                document.getElementById("mediaMenu");
+
+            const willOpen =
+                !mediaMenu.classList.contains("active");
+
+            mediaMenu.classList.toggle("active");
+
+            if (willOpen) {
+                backToMediaMain();
+            }
+        }
+
+        function showImageOptions() {
+
+            document.getElementById("mediaMainOptions").style.display = "none";
+
+            document.getElementById("imageOptions").style.display = "grid";
+
+            document.getElementById("videoOptions").style.display = "none";
+        }
+
+        function showVideoOptions() {
+
+            document.getElementById("mediaMainOptions").style.display = "none";
+
+            document.getElementById("imageOptions").style.display = "none";
+
+            document.getElementById("videoOptions").style.display = "grid";
+        }
+
+        function backToMediaMain() {
+
+            document.getElementById("mediaMainOptions").style.display = "grid";
+
+            document.getElementById("imageOptions").style.display = "none";
+
+            document.getElementById("videoOptions").style.display = "none";
+        }
+
+        function openImageCamera() {
+
+            openCamera("image");
+        }
+
+        function chooseImageFromDevice() {
+
+            document.getElementById("image").click();
+        }
+
+        function openVideoCamera() {
+
+            openCamera("video");
+        }
+
+        function chooseVideoFromDevice() {
+
+            document.getElementById("video").click();
+        }
+
+        function updateSelectedMediaPreview(type, fileName) {
+
+            const preview =
+                document.getElementById("selectedMediaPreview");
+
+            preview.innerHTML = `
+
+                Selected ${escapeHTML(type)}:
+                <br>
+                <span>${escapeHTML(fileName)}</span>
+
+            `;
+        }
+
+        function copyFileToInput(sourceInputId, targetInputId) {
+
+            const sourceInput =
+                document.getElementById(sourceInputId);
+
+            const targetInput =
+                document.getElementById(targetInputId);
+
+            if (sourceInput.files.length > 0) {
+
+                const dataTransfer =
+                    new DataTransfer();
+
+                dataTransfer.items.add(sourceInput.files[0]);
+
+                targetInput.files =
+                    dataTransfer.files;
+            }
+        }
+
+        document.getElementById("image").addEventListener("change", function () {
+
+            if (this.files.length > 0) {
+
+                document.getElementById("video").value = "";
+                document.getElementById("videoCamera").value = "";
+
+                updateSelectedMediaPreview(
+                    "Image",
+                    this.files[0].name
+                );
+
+                document.getElementById("mediaMenu").classList.remove("active");
+            }
+        });
+
+        document.getElementById("imageCamera").addEventListener("change", function () {
+
+            if (this.files.length > 0) {
+
+                copyFileToInput("imageCamera", "image");
+
+                document.getElementById("video").value = "";
+                document.getElementById("videoCamera").value = "";
+
+                updateSelectedMediaPreview(
+                    "Image",
+                    this.files[0].name
+                );
+
+                document.getElementById("mediaMenu").classList.remove("active");
+            }
+        });
+
+        document.getElementById("video").addEventListener("change", function () {
+
+            if (this.files.length > 0) {
+
+                document.getElementById("image").value = "";
+                document.getElementById("imageCamera").value = "";
+
+                updateSelectedMediaPreview(
+                    "Video",
+                    this.files[0].name
+                );
+
+                document.getElementById("mediaMenu").classList.remove("active");
+            }
+        });
+
+        document.getElementById("videoCamera").addEventListener("change", function () {
+
+            if (this.files.length > 0) {
+
+                copyFileToInput("videoCamera", "video");
+
+                document.getElementById("image").value = "";
+                document.getElementById("imageCamera").value = "";
+
+                updateSelectedMediaPreview(
+                    "Video",
+                    this.files[0].name
+                );
+
+                document.getElementById("mediaMenu").classList.remove("active");
+            }
+        });
+
+        document.addEventListener("click", function (e) {
+
+            const wrapper =
+                document.querySelector(".upload-media-wrapper");
+
+            if (wrapper && !wrapper.contains(e.target)) {
+
+                document.getElementById("mediaMenu").classList.remove("active");
+            }
+        });
+
+        /* ================= REAL WEBCAM CAMERA ================= */
+
+        let cameraStream = null;
+        let cameraMode = null;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+
+        async function openCamera(type) {
+
+            cameraMode = type;
+
+            const cameraModal =
+                document.getElementById("cameraModal");
+
+            const cameraTitle =
+                document.getElementById("cameraTitle");
+
+            const cameraPreview =
+                document.getElementById("cameraPreview");
+
+            const captureBtn =
+                document.getElementById("captureBtn");
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert("Camera is not supported in this browser. Please use Chrome/Edge and run on localhost or HTTPS.");
+                return;
+            }
+
+            try {
+
+                if (type === "image") {
+
+                    cameraTitle.innerText = "Capture Image";
+
+                    captureBtn.innerText = "📸 Capture Photo";
+
+                    cameraStream =
+                        await navigator.mediaDevices.getUserMedia({
+                            video: true,
+                            audio: false
+                        });
+
+                    captureBtn.onclick = capturePhoto;
+
+                } else {
+
+                    cameraTitle.innerText = "Record Video";
+
+                    captureBtn.innerText = "🎥 Start Recording";
+
+                    cameraStream =
+                        await navigator.mediaDevices.getUserMedia({
+                            video: true,
+                            audio: true
+                        });
+
+                    captureBtn.onclick = startVideoRecording;
+                }
+
+                cameraPreview.srcObject = cameraStream;
+
+                cameraModal.style.display = "flex";
+
+                document.getElementById("mediaMenu").classList.remove("active");
+
+            } catch (err) {
+
+                console.log(err);
+
+                alert("Camera permission denied or webcam not available ❌");
+            }
+        }
+
+        function capturePhoto() {
+
+            const video =
+                document.getElementById("cameraPreview");
+
+            const canvas =
+                document.getElementById("cameraCanvas");
+
+            canvas.width =
+                video.videoWidth;
+
+            canvas.height =
+                video.videoHeight;
+
+            const ctx =
+                canvas.getContext("2d");
+
+            ctx.drawImage(
+                video,
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+            canvas.toBlob(function (blob) {
+
+                const file =
+                    new File(
+                        [blob],
+                        "camera-photo.png",
+                        {
+                            type: "image/png"
+                        }
+                    );
+
+                const dataTransfer =
+                    new DataTransfer();
+
+                dataTransfer.items.add(file);
+
+                const imageInput =
+                    document.getElementById("image");
+
+                imageInput.files =
+                    dataTransfer.files;
+
+                document.getElementById("video").value = "";
+                document.getElementById("videoCamera").value = "";
+
+                updateSelectedMediaPreview(
+                    "Image",
+                    file.name
+                );
+
+                closeCameraModal();
+
+            }, "image/png");
+        }
+
+        function startVideoRecording() {
+
+            const captureBtn =
+                document.getElementById("captureBtn");
+
+            recordedChunks = [];
+
+            try {
+
+                mediaRecorder =
+                    new MediaRecorder(cameraStream);
+
+            } catch (err) {
+
+                console.log(err);
+
+                alert("Video recording is not supported in this browser.");
+
+                return;
+            }
+
+            mediaRecorder.ondataavailable = function (event) {
+
+                if (event.data.size > 0) {
+
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = function () {
+
+                const blob =
+                    new Blob(
+                        recordedChunks,
+                        {
+                            type: "video/webm"
+                        }
+                    );
+
+                const file =
+                    new File(
+                        [blob],
+                        "camera-video.webm",
+                        {
+                            type: "video/webm"
+                        }
+                    );
+
+                const dataTransfer =
+                    new DataTransfer();
+
+                dataTransfer.items.add(file);
+
+                const videoInput =
+                    document.getElementById("video");
+
+                videoInput.files =
+                    dataTransfer.files;
+
+                document.getElementById("image").value = "";
+                document.getElementById("imageCamera").value = "";
+
+                updateSelectedMediaPreview(
+                    "Video",
+                    file.name
+                );
+
+                closeCameraModal();
+            };
+
+            mediaRecorder.start();
+
+            captureBtn.innerText = "⏹ Stop Recording";
+
+            captureBtn.onclick = stopVideoRecording;
+        }
+
+        function stopVideoRecording() {
+
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+
+                mediaRecorder.stop();
+            }
+        }
+
+        function closeCameraModal() {
+
+            const cameraModal =
+                document.getElementById("cameraModal");
+
+            const cameraPreview =
+                document.getElementById("cameraPreview");
+
+            cameraModal.style.display = "none";
+
+            cameraPreview.srcObject = null;
+
+            if (cameraStream) {
+
+                cameraStream.getTracks().forEach(track => {
+
+                    track.stop();
+                });
+
+                cameraStream = null;
+            }
+
+            mediaRecorder = null;
+
+            recordedChunks = [];
+        }
+
+        /* ================= CLEAR FORM ================= */
+
+        function clearComplaintForm() {
+
+            complaint.value = "";
+
+            charCount.innerText = "0/300";
+
+            document.getElementById("image").value = "";
+            document.getElementById("imageCamera").value = "";
+            document.getElementById("video").value = "";
+            document.getElementById("videoCamera").value = "";
+
+            document.getElementById("selectedMediaPreview").innerHTML = "";
+            document.getElementById("aiPriorityPreview").innerText =
+            "AI will auto-detect priority";
+            showToast("Form cleared");
+        }
+
+        /* ================= SUBMIT COMPLAINT ================= */
+
+        let isSubmitting = false;
+        function submitComplaint() {
+
+    if (isSubmitting) {
+        return;
+    }
+
+    const currentUser =
+        localStorage.getItem("profile_name") ||
+        localStorage.getItem("user") ||
+        "Student";
+
+    const currentIdentifier =
+        localStorage.getItem("identifier") ||
+        localStorage.getItem("profile_prn") ||
+        "";
+
+    const complaintText =
+        complaint.value.trim();
+
+    if (!complaintText) {
+        alert("Enter complaint");
+        return;
+    }
+
+    if (!currentIdentifier) {
+        alert("Please update your PRN / Identifier in profile first.");
+        openProfileModal();
+        return;
+    }
+
+    let fd = new FormData();
+
+    fd.append("name", currentUser);
+    fd.append("role", localStorage.getItem("role") || "student");
+    fd.append("identifier", currentIdentifier);
+    fd.append("complaint", complaintText);
+    fd.append("category", getCategory());
+    fd.append("priority", getPriority());
+    fd.append("profile_image", "");
+    fd.append("user_dept", localStorage.getItem("profile_dept") || "");
+    fd.append("user_course", localStorage.getItem("profile_course") || "");
+
+    const img = document.getElementById("image");
+    const vid = document.getElementById("video");
+
+    if (img && img.files.length > 0) {
+        fd.append("image", img.files[0]);
+    }
+
+    if (vid && vid.files.length > 0) {
+        fd.append("video", vid.files[0]);
+    }
+
+    isSubmitting = true;
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Submitting...";
+
+    fetch('/submit_complaint', {
+        method: 'POST',
+        body: fd
+    })
+
+        .then(async response => {
+
+            const text = await response.text();
+
+            console.log("SUBMIT RESPONSE:", text);
+
+            let data = null;
+
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                data = null;
+            }
+
+            if (
+                response.ok &&
+                (
+                    text.includes("submitted") ||
+                    (data && data.status === "success")
+                )
+            ) {
+
+                showToast("Complaint Submitted Successfully ✅");
+
+                complaint.value = "";
+                charCount.innerText = "0/300";
+
+                document.getElementById("image").value = "";
+                document.getElementById("imageCamera").value = "";
+                document.getElementById("video").value = "";
+                document.getElementById("videoCamera").value = "";
+                document.getElementById("selectedMediaPreview").innerHTML = "";
+
+                loadUserComplaints();
+
+            } else if (
+                text.includes("complaint_required") ||
+                (data && data.message === "complaint_required")
+            ) {
+
+                alert("Complaint text is required ❌");
+
+            } else {
+
+                alert(
+                    (data && data.message)
+                        ? data.message
+                        : "Submission Failed ❌"
+                );
+
+                console.log("SUBMISSION FAILED:", text);
+            }
+        })
+
+        .catch(err => {
+
+            console.log("SERVER ERROR:", err);
+
+            alert("Server Error ❌");
+        })
+
+        .finally(() => {
+
+            isSubmitting = false;
+
+            submitBtn.disabled = false;
+
+            submitBtn.innerText = "Submit";
+        });
+}
+
+        /* ================= LOAD USER COMPLAINTS ================= */
+
+        let allComplaintsData = [];
+
+        function loadUserComplaints() {
+
+            const currentUser =
+                localStorage.getItem("profile_name") ||
+                localStorage.getItem("user") ||
+                "Student";
+
+            fetch(
+                '/get_complaints/' +
+                encodeURIComponent(currentUser)
+            )
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    if (!Array.isArray(data)) {
+                        data = [];
+                    }
+
+                    allComplaintsData = data;
+
+                    renderComplaints(data);
+                })
+
+                .catch(err => {
+
+                    console.log(err);
+
+                    complaints.innerHTML = `
+
+                        <div class="empty">
+                            Failed to load complaints
+                        </div>
+
+                    `;
+                });
+        }
+
+        function renderComplaints(data) {
+
+            let html = "";
+
+            let total = data.length;
+
+            let resolved = 0;
+
+            let pending = 0;
+
+            let urgent = 0;
+
+            data.forEach(c => {
+
+                if (String(c.status || "").toLowerCase() === "resolved")
+                    resolved++;
+
+                if (String(c.status || "").toLowerCase() === "pending")
+                    pending++;
+
+                const aiPriority =
+                    c.ai_priority ||
+                    c.priority ||
+                    "Medium";
+
+                if (
+                    String(aiPriority).toLowerCase() === "urgent" ||
+                    String(aiPriority).toLowerCase() === "high"
+                ) {
+                    urgent++;
+                }
+
+                const statusClass =
+                    String(c.status || 'pending')
+                        .toLowerCase()
+                        .replace(/\s+/g, "-");
+
+                const severity =
+                    Number(c.severity_score || 0);
+
+                const safeSeverity =
+                    Math.max(0, Math.min(100, severity));
+
+                const duplicate =
+                    c.is_duplicate === true ||
+                    c.is_duplicate === 1 ||
+                    c.is_duplicate === "1" ||
+                    c.is_duplicate === "true";
+
+                const duplicateText =
+                    duplicate
+                        ? `Yes${c.duplicate_of ? " - Similar to #" + c.duplicate_of : ""}`
+                        : "No";
+
+                html += `
+
+                    <div class="complaint-card" data-status="${escapeHTML(statusClass)}">
+
+                        <div class="card-top">
+
+                            <div class="card-title">
+                                ${escapeHTML(c.complaint || "")}
+                            </div>
+
+                            <span class="status ${escapeHTML(statusClass)}">
+                                ${escapeHTML(c.status || 'Pending')}
+                            </span>
+
+                        </div>
+
+                        <div class="card-meta">
+
+                            📂 Selected Category:
+                            <b>${escapeHTML(c.category || "General")}</b>
+
+                            &nbsp; • &nbsp;
+
+                            ⚡ Selected Priority:
+                            <b>${escapeHTML(c.priority || "Medium")}</b>
+
+                        </div>
+
+                        <div class="card-time">
+                            🕒 ${escapeHTML(c.created_at || "")}
+                        </div>
+
+                        <div class="ai-box">
+
+                            <div class="ai-title">
+                                🤖 AI Complaint Analysis
+                            </div>
+
+                            <div class="ai-grid">
+
+                                <div class="ai-item">
+                                    <div class="ai-label">AI Category</div>
+                                    <div class="ai-value">${escapeHTML(c.ai_category || "Not analyzed")}</div>
+                                </div>
+
+                                <div class="ai-item">
+                                    <div class="ai-label">AI Priority</div>
+                                    <div class="ai-value">${escapeHTML(c.ai_priority || "Not analyzed")}</div>
+                                </div>
+
+                                <div class="ai-item">
+                                    <div class="ai-label">Severity Score</div>
+                                    <div class="ai-value">${safeSeverity}/100</div>
+
+                                    <div class="severity-bar">
+                                        <div class="severity-fill" style="width:${safeSeverity}%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="ai-item">
+                                    <div class="ai-label">Duplicate Complaint</div>
+                                    <div class="ai-value">
+                                        <span class="duplicate-badge ${duplicate ? "duplicate-yes" : "duplicate-no"}">
+                                            ${escapeHTML(duplicateText)}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="ai-item ai-summary">
+                                    <div class="ai-label">AI Summary</div>
+                                    <div class="ai-value">${escapeHTML(c.ai_summary || "No summary available")}</div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        ${c.image_path
+                        ?
+                        `
+                            <img
+                                src="${escapeHTML(c.image_path)}"
+                                class="complaint-image"
+                                alt="Complaint Image"
+                            >
+                        `
+                        :
+                        ""
+                    }
+
+                        ${c.video_path
+                        ?
+                        `
+                            <video
+                                controls
+                                class="complaint-video">
+                                <source src="${escapeHTML(c.video_path)}">
+                            </video>
+                        `
+                        :
+                        ""
+                    }
+
+                    </div>
+
+                `;
+            });
+
+            complaints.innerHTML = html || `
+                <div class="empty">
+                    No complaints found
+                </div>
+            `;
+
+            totalCount.innerText = total;
+
+            resolvedCount.innerText = resolved;
+
+            pendingCount.innerText = pending;
+
+            urgentCount.innerText = urgent;
+
+            filterComplaints();
+        }
+
+        /* ================= SEARCH + FILTER ================= */
+
+        searchBox.oninput = () => {
+            filterComplaints();
+        };
+
+        function filterComplaints() {
+
+            const searchValue =
+                searchBox.value.toLowerCase();
+
+            const statusValue =
+                statusFilter.value.toLowerCase();
+
+            document.querySelectorAll(".complaint-card")
+                .forEach(card => {
+
+                    const textMatch =
+                        card.innerText
+                            .toLowerCase()
+                            .includes(searchValue);
+
+                    const cardStatus =
+                        card.dataset.status || "";
+
+                    const statusMatch =
+                        statusValue === "all" ||
+                        cardStatus === statusValue;
+
+                    card.style.display =
+                        textMatch && statusMatch
+                            ? "block"
+                            : "none";
+                });
+        }
+
+        /* ================= LOGOUT ================= */
+
+        function logout() {
+
+            localStorage.clear();
+
+            location.href = "/";
+        }
+
+        /* ================= AUTO REFRESH ================= */
+
+        setInterval(
+            loadUserComplaints,
+            5000
+        );
+
+        /* ================= INIT ================= */
+
+        loadUserComplaints();
+    </script>
+
+</body>
+
+</html>

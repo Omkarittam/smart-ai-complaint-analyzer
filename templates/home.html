@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Complaint System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --bg:#0b1120;
+    --panel:#111827;
+    --panel2:#0f172a;
+    --card:#111827;
+    --border:#1f2937;
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --blue:#3b82f6;
+    --green:#22c55e;
+    --orange:#f59e0b;
+    --red:#ef4444;
+}
+
+body{
+    min-height:100vh;
+    font-family:'Inter',sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(59,130,246,.20), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(14,165,233,.12), transparent 34%),
+        var(--bg);
+    color:var(--text);
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+    width:100%;
+    padding:22px 7%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid rgba(148,163,184,.12);
+    background:rgba(11,17,32,.72);
+    backdrop-filter:blur(16px);
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo-icon{
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 10px 25px rgba(59,130,246,.25);
+}
+
+.logo-text h2{
+    font-size:20px;
+    letter-spacing:.2px;
+}
+
+.logo-text p{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:3px;
+}
+
+.nav-badge{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 16px;
+    border-radius:999px;
+    background:rgba(59,130,246,.12);
+    border:1px solid rgba(96,165,250,.25);
+    color:#bfdbfe;
+    font-size:13px;
+    font-weight:600;
+}
+
+/* ================= PAGE ================= */
+
+.page{
+    width:100%;
+    padding:54px 7% 70px;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+    max-width:1200px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+    gap:32px;
+    align-items:stretch;
+}
+
+.hero-left{
+    min-height:520px;
+    background:
+        linear-gradient(145deg,rgba(17,24,39,.94),rgba(15,23,42,.94));
+    border:1px solid rgba(148,163,184,.16);
+    border-radius:28px;
+    padding:48px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 28px 80px rgba(0,0,0,.32);
+}
+
+.hero-left::before{
+    content:"";
+    position:absolute;
+    width:360px;
+    height:360px;
+    border-radius:50%;
+    background:rgba(59,130,246,.14);
+    right:-130px;
+    top:-130px;
+}
+
+.hero-left::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px),
+        linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px);
+    background-size:38px 38px;
+    opacity:.35;
+    pointer-events:none;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+}
+
+.kicker{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 14px;
+    border-radius:999px;
+    background:rgba(59,130,246,.12);
+    color:#bfdbfe;
+    border:1px solid rgba(147,197,253,.24);
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:28px;
+}
+
+.hero-title{
+    font-size:58px;
+    line-height:1.02;
+    letter-spacing:-2.5px;
+    font-weight:900;
+    margin-bottom:22px;
+}
+
+.hero-title span{
+    color:#60a5fa;
+}
+
+.hero-desc{
+    max-width:650px;
+    font-size:17px;
+    line-height:1.9;
+    color:#cbd5e1;
+    margin-bottom:34px;
+}
+
+.hero-actions{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-bottom:34px;
+}
+
+.primary-btn,
+.secondary-btn{
+    height:48px;
+    padding:0 20px;
+    border-radius:14px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:800;
+    transition:.25s;
+}
+
+.primary-btn{
+    background:#2563eb;
+    color:white;
+    box-shadow:0 12px 28px rgba(37,99,235,.28);
+}
+
+.secondary-btn{
+    background:rgba(30,41,59,.9);
+    color:#dbeafe;
+    border:1px solid rgba(148,163,184,.20);
+}
+
+.primary-btn:hover,
+.secondary-btn:hover{
+    transform:translateY(-2px);
+}
+
+.stats-row{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+}
+
+.mini-stat{
+    background:rgba(15,23,42,.75);
+    border:1px solid rgba(148,163,184,.16);
+    border-radius:18px;
+    padding:18px;
+}
+
+.mini-stat h3{
+    font-size:24px;
+    margin-bottom:5px;
+}
+
+.mini-stat p{
+    color:var(--muted);
+    font-size:12px;
+}
+
+/* ================= LOGIN SECTION ================= */
+
+.login-area{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.login-header{
+    background:#ffffff;
+    color:#0f172a;
+    border-radius:28px;
+    padding:30px;
+    box-shadow:0 28px 80px rgba(0,0,0,.30);
+}
+
+.login-header h2{
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:-.8px;
+    margin-bottom:10px;
+}
+
+.login-header p{
+    color:#64748b;
+    line-height:1.7;
+    font-size:14px;
+}
+
+.role-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+}
+
+.role-card{
+    min-height:170px;
+    text-decoration:none;
+    color:#0f172a;
+    background:#ffffff;
+    border:1px solid #e2e8f0;
+    border-radius:24px;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    transition:.25s ease;
+    box-shadow:0 20px 55px rgba(0,0,0,.18);
+}
+
+.role-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 26px 70px rgba(0,0,0,.24);
+    border-color:#93c5fd;
+}
+
+.role-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.role-icon{
+    width:50px;
+    height:50px;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:19px;
+}
+
+.student-icon{
+    background:#16a34a;
+}
+
+.staff-icon{
+    background:#d97706;
+}
+
+.security-icon{
+    background:#dc2626;
+}
+
+.admin-icon{
+    background:#2563eb;
+}
+
+.role-arrow{
+    color:#94a3b8;
+}
+
+.role-card h3{
+    font-size:20px;
+    margin-bottom:8px;
+}
+
+.role-card p{
+    color:#64748b;
+    font-size:13px;
+    line-height:1.6;
+}
+
+/* ================= FEATURE STRIP ================= */
+
+.feature-strip{
+    max-width:1200px;
+    margin:32px auto 0;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+}
+
+.feature-card{
+    background:rgba(17,24,39,.82);
+    border:1px solid rgba(148,163,184,.16);
+    border-radius:22px;
+    padding:22px;
+}
+
+.feature-card i{
+    color:#60a5fa;
+    font-size:20px;
+    margin-bottom:14px;
+}
+
+.feature-card h4{
+    font-size:15px;
+    margin-bottom:8px;
+}
+
+.feature-card p{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1050px){
+
+    .hero{
+        grid-template-columns:1fr;
+    }
+
+    .hero-left{
+        min-height:auto;
+    }
+}
+
+@media(max-width:760px){
+
+    .navbar{
+        padding:18px 20px;
+    }
+
+    .nav-badge{
+        display:none;
+    }
+
+    .page{
+        padding:30px 20px 50px;
+    }
+
+    .hero-left{
+        padding:30px;
+        border-radius:22px;
+    }
+
+    .hero-title{
+        font-size:40px;
+        letter-spacing:-1.4px;
+    }
+
+    .stats-row,
+    .role-grid,
+    .feature-strip{
+        grid-template-columns:1fr;
+    }
+
+    .login-header{
+        padding:26px;
+        border-radius:22px;
+    }
+}
+
+@media(max-width:480px){
+
+    .hero-title{
+        font-size:34px;
+    }
+
+    .hero-desc{
+        font-size:15px;
+    }
+
+    .primary-btn,
+    .secondary-btn{
+        width:100%;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+
+            <i class="fa-solid fa-building-shield"></i>
+
+        </div>
+
+        <div class="logo-text">
+
+            <h2>AI Complaint System</h2>
+
+            <p>Smart Campus Support Portal</p>
+
+        </div>
+
+    </div>
+
+    <div class="nav-badge">
+
+        <i class="fa-solid fa-lock"></i>
+
+        Secure Access
+
+    </div>
+
+</nav>
+
+<!-- ================= PAGE ================= -->
+
+<main class="page">
+
+    <section class="hero">
+
+        <!-- LEFT HERO -->
+
+        <div class="hero-left">
+
+            <div class="hero-content">
+
+                <div class="kicker">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    AI Powered Complaint Workflow
+
+                </div>
+
+                <h1 class="hero-title">
+
+                    Manage Campus <span>Complaints</span> Smarter
+
+                </h1>
+
+                <p class="hero-desc">
+
+                    A structured complaint management portal for students, staff, security and administrators. Submit complaints, track status updates, receive email notifications and improve campus support with a clean digital workflow.
+
+                </p>
+
+                <div class="hero-actions">
+
+                    <a href="/login/student" class="primary-btn">
+
+                        <i class="fa-solid fa-user-graduate"></i>
+
+                        Student Login
+
+                    </a>
+
+                    <a href="/admin_login" class="secondary-btn">
+
+                        <i class="fa-solid fa-user-shield"></i>
+
+                        Admin Panel
+
+                    </a>
+
+                </div>
+
+                <div class="stats-row">
+
+                    <div class="mini-stat">
+
+                        <h3>4</h3>
+
+                        <p>User Roles</p>
+
+                    </div>
+
+                    <div class="mini-stat">
+
+                        <h3>24/7</h3>
+
+                        <p>Complaint Access</p>
+
+                    </div>
+
+                    <div class="mini-stat">
+
+                        <h3>AI</h3>
+
+                        <p>Smart Support</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT LOGIN -->
+
+        <div class="login-area">
+
+            <div class="login-header">
+
+                <h2>Choose Portal</h2>
+
+                <p>Select your role to continue with secure access to the complaint management system.</p>
+
+            </div>
+
+            <div class="role-grid">
+
+                <a href="/login/student" class="role-card">
+
+                    <div class="role-top">
+
+                        <div class="role-icon student-icon">
+
+                            <i class="fa-solid fa-user-graduate"></i>
+
+                        </div>
+
+                        <i class="fa-solid fa-arrow-right role-arrow"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3>Student</h3>
+
+                        <p>Submit complaints and track status updates.</p>
+
+                    </div>
+
+                </a>
+
+                <a href="/login/staff" class="role-card">
+
+                    <div class="role-top">
+
+                        <div class="role-icon staff-icon">
+
+                            <i class="fa-solid fa-user-tie"></i>
+
+                        </div>
+
+                        <i class="fa-solid fa-arrow-right role-arrow"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3>Staff</h3>
+
+                        <p>Access staff complaint and support portal.</p>
+
+                    </div>
+
+                </a>
+
+                <a href="/login/security" class="role-card">
+
+                    <div class="role-top">
+
+                        <div class="role-icon security-icon">
+
+                            <i class="fa-solid fa-shield-halved"></i>
+
+                        </div>
+
+                        <i class="fa-solid fa-arrow-right role-arrow"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3>Security</h3>
+
+                        <p>Report and review security related issues.</p>
+
+                    </div>
+
+                </a>
+
+                <a href="/admin_login" class="role-card">
+
+                    <div class="role-top">
+
+                        <div class="role-icon admin-icon">
+
+                            <i class="fa-solid fa-user-shield"></i>
+
+                        </div>
+
+                        <i class="fa-solid fa-arrow-right role-arrow"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3>Admin</h3>
+
+                        <p>Manage complaints, users and status updates.</p>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FEATURE STRIP -->
+
+    <section class="feature-strip">
+
+        <div class="feature-card">
+
+            <i class="fa-solid fa-face-smile"></i>
+
+            <h4>Face Login</h4>
+
+            <p>Secure identity verification using registered face data.</p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <i class="fa-solid fa-ticket"></i>
+
+            <h4>Complaint Tracking</h4>
+
+            <p>Track complaint status from pending to resolved.</p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <i class="fa-solid fa-language"></i>
+
+            <h4>Translation</h4>
+
+            <p>Translate complaint details into selected languages.</p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <i class="fa-solid fa-envelope-circle-check"></i>
+
+            <h4>Email Alerts</h4>
+
+            <p>Notify users automatically after status changes.</p>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+
+</html>

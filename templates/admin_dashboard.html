@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+AI Complaint Admin Dashboard
+</title>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<style>
+
+/* ================= ROOT ================= */
+
+:root{
+
+    --bg:#0b1120;
+
+    --card:#111827;
+
+    --card2:#0f172a;
+
+    --border:#1f2937;
+
+    --text:#f8fafc;
+
+    --muted:#94a3b8;
+
+    --primary:#3b82f6;
+
+    --green:#22c55e;
+
+    --orange:#f59e0b;
+
+    --red:#ef4444;
+
+    --purple:#8b5cf6;
+}
+
+/* ================= LIGHT ================= */
+
+body.light{
+
+    --bg:#f3f4f6;
+
+    --card:#ffffff;
+
+    --card2:#f8fafc;
+
+    --border:#dbe4ee;
+
+    --text:#111827;
+
+    --muted:#64748b;
+}
+
+/* ================= GLOBAL ================= */
+
+*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:'Inter',sans-serif;
+
+    background:var(--bg);
+
+    color:var(--text);
+
+    min-height:100vh;
+
+    overflow-x:hidden;
+}
+
+/* ================= TOPBAR ================= */
+
+.topbar{
+
+    height:74px;
+
+    background:var(--card);
+
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 28px;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:999;
+}
+
+.left-top{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+}
+
+.logo{
+
+    width:14px;
+
+    height:14px;
+
+    border-radius:50%;
+
+    background:var(--primary);
+}
+
+.title-wrap{
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+.title{
+
+    font-size:22px;
+
+    font-weight:700;
+}
+
+.subtitle{
+
+    font-size:12px;
+
+    color:var(--muted);
+
+    margin-top:4px;
+}
+
+/* ================= TOP ACTIONS ================= */
+
+.top-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+.search-box{
+
+    width:320px;
+
+    height:42px;
+
+    background:var(--card2);
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 14px;
+}
+
+.search-box input{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    background:none;
+
+    color:var(--text);
+
+    font-size:14px;
+}
+
+.theme-btn{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:var(--card2);
+
+    border:1px solid var(--border);
+
+    cursor:pointer;
+
+    color:var(--text);
+
+    font-size:15px;
+}
+
+.logout-btn{
+
+    height:42px;
+
+    padding:0 18px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:var(--red);
+
+    color:white;
+
+    cursor:pointer;
+
+    font-weight:600;
+}
+.filter-bar{
+
+    width:95%;
+
+    max-width:1600px;
+
+    margin:0 auto 20px auto;
+
+    display:flex;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+}
+
+.filter-bar button{
+
+    border:none;
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    color:var(--text);
+
+    padding:10px 18px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.3s;
+}
+
+.filter-bar button:hover{
+
+    background:var(--primary);
+
+    color:white;
+}
+/* ================= STATS ================= */
+
+.stats{
+
+    width:95%;
+
+    max-width:1600px;
+
+    margin:20px auto;
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(5,1fr);
+
+    gap:14px;
+}
+
+.stat-card{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    padding:18px;
+
+    min-height:120px;
+}
+.stat-card h2{
+
+    font-size:24px;
+
+    margin-top:8px;
+}
+@media(max-width:1100px){
+
+    .stats{
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+}
+
+@media(max-width:700px){
+
+    .stats{
+
+        grid-template-columns:1fr;
+    }
+}
+
+.stat-card h2{
+
+    font-size:24px;
+
+    margin-top:8px;
+}
+/* ================= MAIN ================= */
+
+.container{
+
+    width:95%;
+
+    max-width:1600px;
+
+    margin:auto;
+
+    padding-bottom:40px;
+}
+
+/* ================= CARD ================= */
+
+.card{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    padding:22px;
+
+    margin-bottom:18px;
+}
+
+.card-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:24px;
+}
+.center-side{
+
+    flex:1;
+}
+.right-side{
+
+    min-width:160px;
+}
+
+/* ================= USER ================= */
+
+.user-block{
+
+    display:flex;
+
+    gap:14px;
+}
+
+.admin-profile-pic{
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:1px solid var(--border);
+}
+
+.user-details h2{
+
+    font-size:18px;
+
+    margin-bottom:6px;
+}
+
+.user-details p{
+
+    font-size:13px;
+
+    color:var(--muted);
+
+    margin-bottom:4px;
+}
+
+/* ================= COMPLAINT ================= */
+
+.complaint-title{
+
+    font-size:13px;
+
+    color:var(--muted);
+
+    margin-bottom:10px;
+
+    font-weight:600;
+}
+
+.complaint-text{
+
+    line-height:1.7;
+
+    font-size:15px;
+}
+
+/* ================= META ================= */
+
+.meta{
+
+    display:flex;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    margin-top:16px;
+}
+
+.meta span{
+
+    background:var(--card2);
+
+    border:1px solid var(--border);
+
+    padding:6px 10px;
+
+    border-radius:8px;
+
+    font-size:12px;
+
+    color:var(--muted);
+}
+
+/* ================= RIGHT SIDE ================= */
+
+.right-side{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-end;
+
+    gap:18px;
+}
+
+/* ================= STATUS ================= */
+
+.status{
+
+    padding:7px 14px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    color:white;
+
+    font-weight:600;
+}
+
+.pending{
+
+    background:var(--orange);
+}
+
+.accepted{
+
+    background:var(--primary);
+}
+
+.resolved{
+
+    background:var(--green);
+}
+
+.rejected{
+
+    background:var(--red);
+}
+
+/* ================= ACTIONS ================= */
+
+.actions{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.actions button{
+
+    width:160px;
+
+    border:none;
+
+    padding:9px 14px;
+
+    border-radius:8px;
+
+    color:white;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    cursor:pointer;
+}
+
+.accept-btn{
+
+    background:var(--primary);
+}
+
+.resolve-btn{
+
+    background:var(--green);
+}
+
+.reject-btn{
+
+    background:var(--red);
+}
+
+.translate-btn{
+
+    background:var(--purple);
+}
+
+/* ================= MEDIA ================= */
+
+.media{
+
+    display:flex;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+    margin-top:20px;
+}
+
+.media img{
+
+    width:180px;
+
+    border-radius:10px;
+
+    border:1px solid var(--border);
+}
+
+.media video{
+
+    width:260px;
+
+    border-radius:10px;
+
+    border:1px solid var(--border);
+}
+
+/* ================= TRANSLATION ================= */
+
+.translation-box{
+
+    display:none;
+
+    margin-top:16px;
+
+    background:var(--card2);
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    padding:14px;
+
+    font-size:13px;
+
+    line-height:1.7;
+
+    max-width:1000px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1100px){
+
+    .card-top{
+
+        grid-template-columns:1fr;
+    }
+
+    .right-side{
+
+        align-items:flex-start;
+    }
+    .actions{
+          display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+    }
+
+    .actions button{
+
+        width:auto;
+    }
+}
+.card{
+
+    max-width:1400px;
+
+    margin:auto auto 18px auto;
+}
+@media(max-width:800px){
+
+    .topbar{
+
+        height:auto;
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:16px;
+
+        padding:18px;
+    }
+
+    .top-actions{
+
+        width:100%;
+
+        flex-wrap:wrap;
+    }
+
+    .search-box{
+
+        width:100%;
+    }
+
+    .media img,
+    .media video{
+
+        width:100%;
+    }
+}
+.translate-section{
+
+    display:flex;
+
+    gap:8px;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+}
+
+.lang-select{
+
+    height:38px;
+
+    border-radius:8px;
+
+    border:1px solid var(--border);
+
+    background:var(--card2);
+
+    color:var(--text);
+
+    padding:0 12px;
+
+    outline:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- ================= TOPBAR ================= -->
+
+<header class="topbar">
+
+    <div class="left-top">
+
+        <div class="logo"></div>
+
+        <div class="title-wrap">
+
+            <div class="title">
+
+                AI Complaint Admin
+
+            </div>
+
+            <div class="subtitle">
+
+                Smart Complaint Moderation Panel
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="top-actions">
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search complaints...">
+
+        </div>
+
+        <button
+            id="themeToggle"
+            class="theme-btn">
+
+            🌙
+
+        </button>
+
+        <button
+            class="logout-btn"
+            onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</header>
+
+<!-- ================= STATS ================= -->
+
+<section class="stats">
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+
+            Total Complaints
+
+        </div>
+
+        <h2 id="totalCount">
+
+            0
+
+        </h2>
+
+    </div>
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+
+            Resolved
+
+        </div>
+
+        <h2 id="resolvedCount">
+
+            0
+
+        </h2>
+
+    </div>
+    <div class="stat-card">
+
+    <div class="stat-label">
+
+        Accepted
+
+    </div>
+
+    <h2 id="acceptedCount">
+
+        0
+
+    </h2>
+
+    </div>
+    <div class="stat-card">
+
+        <div class="stat-label">
+
+            Pending
+
+        </div>
+
+        <h2 id="pendingCount">
+
+            0
+
+        </h2>
+
+    </div>
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+
+            Rejected
+
+        </div>
+
+        <h2 id="rejectedCount">
+
+            0
+
+        </h2>
+
+    </div>
+
+</section>
+
+<!-- ================= MAIN ================= -->
+<div class="filter-bar">
+
+    <button onclick="filterComplaints('All')">
+
+        All
+
+    </button>
+
+    <button onclick="filterComplaints('Academics')">
+
+        🎓 Academics
+
+    </button>
+
+    <button onclick="filterComplaints('Canteen')">
+
+        🍴 Canteen
+
+    </button>
+
+    <button onclick="filterComplaints('Hostel')">
+
+        🏨 Hostel
+
+    </button>
+
+    <button onclick="filterComplaints('IT')">
+
+        💻 Technical / IT
+
+    </button>
+
+</div> 
+<div class="container"
+id="container">
+
+</div>
+
+<script>
+
+let allComplaints = [];
+let currentCategory = "All";
+
+/* ================= LOAD COMPLAINTS ================= */
+
+function loadComplaints() {
+
+    fetch("/admin_data")
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        console.log("ADMIN DATA RESPONSE:", data);
+
+        if (data.status !== "success") {
+
+            console.log("ADMIN DATA ERROR:", data.message);
+
+            allComplaints = [];
+
+            renderComplaints();
+
+            return;
+        }
+
+        allComplaints = data.complaints || [];
+
+        console.log(
+            "TOTAL COMPLAINTS LOADED:",
+            allComplaints.length
+        );
+
+        renderComplaints();
+
+    })
+
+    .catch(error => {
+
+        console.log(
+            "ADMIN DATA FETCH ERROR:",
+            error
+        );
+
+        allComplaints = [];
+
+        renderComplaints();
+
+    });
+}
+
+/* ================= RENDER COMPLAINTS ================= */
+
+function renderComplaints() {
+
+    const container =
+    document.getElementById("container");
+
+    if (!container) {
+
+        console.log("container not found");
+
+        return;
+    }
+
+    container.innerHTML = "";
+
+    let filteredComplaints =
+    allComplaints;
+
+    if (currentCategory !== "All") {
+
+        filteredComplaints =
+        allComplaints.filter(c => {
+
+            const category =
+            (c.category || "")
+            .toLowerCase();
+
+            if (currentCategory === "Academics") {
+
+                return category.includes("academic") ||
+                       category.includes("exam") ||
+                       category.includes("faculty") ||
+                       category.includes("attendance") ||
+                       category.includes("assignment") ||
+                       category.includes("timetable") ||
+                       category.includes("teaching");
+            }
+
+            if (currentCategory === "Hostel") {
+
+                return category.includes("hostel") ||
+                       category.includes("room") ||
+                       category.includes("cleaning") ||
+                       category.includes("water");
+            }
+
+            if (currentCategory === "Canteen") {
+
+                return category.includes("canteen") ||
+                       category.includes("mess") ||
+                       category.includes("food") ||
+                       category.includes("hygiene") ||
+                       category.includes("pricing");
+            }
+
+            if (currentCategory === "IT") {
+
+                return category.includes("technical") ||
+                       category.includes("it") ||
+                       category.includes("wifi") ||
+                       category.includes("portal") ||
+                       category.includes("lab") ||
+                       category.includes("system");
+            }
+
+            return true;
+
+        });
+    }
+
+    updateStats();
+
+    if (filteredComplaints.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="card">
+
+                <h2>
+                    No complaints found
+                </h2>
+
+                <p style="color:var(--muted);margin-top:8px;">
+                    No complaints available for this category.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+    filteredComplaints.forEach(c => {
+
+        const card =
+        document.createElement("div");
+
+        card.className = "card";
+
+        card.setAttribute(
+            "data-category",
+            c.category || "General"
+        );
+
+        const statusValue =
+        c.status || "Pending";
+
+        const statusClass =
+        String(statusValue)
+        .toLowerCase();
+
+        const profileImage =
+        c.profile_image
+        ?
+        c.profile_image
+        :
+        "https://ui-avatars.com/api/?name=" +
+        encodeURIComponent(c.name || "User");
+
+        const complaintText =
+        escapeHtml(c.complaint || "");
+
+        const safeName =
+        escapeHtml(c.name || "Unknown User");
+
+        const safeIdentifier =
+        escapeHtml(c.identifier || "");
+
+        const safeDept =
+        escapeHtml(c.user_dept || "Not updated");
+
+        const safeCourse =
+        escapeHtml(c.user_course || "Not updated");
+
+        const safeCategory =
+        escapeHtml(c.category || "General");
+
+        const safePriority =
+        escapeHtml(c.priority || "Medium");
+
+        const safeRole =
+        escapeHtml(c.role || "");
+
+        card.innerHTML = `
+
+            <div class="card-top">
+
+                <div class="center-side">
+
+                    <div class="user-block">
+
+                        <img
+                            class="admin-profile-pic"
+                            src="${profileImage}"
+                            alt="Profile">
+
+                        <div class="user-details">
+
+                            <h2>
+                                ${safeName}
+                            </h2>
+
+                            <p>
+                                ${safeIdentifier}
+                            </p>
+
+                            <p>
+                                ${safeDept}
+                            </p>
+
+                            <p>
+                                ${safeCourse}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="meta">
+
+                        <span>
+                            ${safeCategory}
+                        </span>
+
+                        <span>
+                            ${safePriority}
+                        </span>
+
+                        <span>
+                            ${safeRole}
+                        </span>
+
+                    </div>
+
+                    <div style="margin-top:20px;">
+
+                        <div class="complaint-title">
+
+                            Complaint
+
+                        </div>
+
+                        <div class="complaint-text">
+
+                            ${complaintText}
+
+                        </div>
+
+                    </div>
+
+                    <div class="media">
+
+                        ${
+                            c.image_path
+                            ?
+                            `
+                            <img
+                                src="${c.image_path}"
+                                alt="Complaint Image">
+                            `
+                            :
+                            ""
+                        }
+
+                        ${
+                            c.video_path
+                            ?
+                            `
+                            <video controls>
+                                <source src="${c.video_path}">
+                            </video>
+                            `
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                    <div style="margin-top:18px;">
+
+                        <div class="translate-section">
+
+                            <select
+                                class="lang-select"
+                                id="lang-${c.id}">
+
+                                <option value="en">
+                                    English
+                                </option>
+
+                                <option value="hi">
+                                    Hindi
+                                </option>
+
+                                <option value="mr">
+                                    Marathi
+                                </option>
+
+                            </select>
+
+                            <button
+                                class="translate-btn"
+                                onclick="translateComplaintById(${c.id})">
+
+                                Translate
+
+                            </button>
+
+                        </div>
+
+                        <div
+                            class="translation-box"
+                            id="translation-${c.id}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="right-side">
+
+                    <div class="status ${statusClass}">
+
+                        ${escapeHtml(statusValue)}
+
+                    </div>
+
+                    <div class="actions">
+
+                        <button
+                            class="accept-btn"
+                            onclick="sendStatusUpdate(${c.id}, 'Accepted')">
+
+                            Accept
+
+                        </button>
+
+                        <button
+                            class="resolve-btn"
+                            onclick="sendStatusUpdate(${c.id}, 'Resolved')">
+
+                            Resolve
+
+                        </button>
+
+                        <button
+                            class="reject-btn"
+                            onclick="rejectComplaint(${c.id})">
+
+                            Reject
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+        container.appendChild(card);
+
+    });
+}
+
+/* ================= UPDATE STATS ================= */
+
+function updateStats() {
+
+    const total =
+    allComplaints.length;
+
+    const accepted =
+    allComplaints.filter(
+        c => c.status === "Accepted"
+    ).length;
+
+    const resolved =
+    allComplaints.filter(
+        c => c.status === "Resolved"
+    ).length;
+
+    const pending =
+    allComplaints.filter(
+        c => c.status === "Pending"
+    ).length;
+
+    const rejected =
+    allComplaints.filter(
+        c => c.status === "Rejected"
+    ).length;
+
+    if (document.getElementById("totalCount")) {
+
+        document.getElementById("totalCount").innerText =
+        total;
+    }
+
+    if (document.getElementById("acceptedCount")) {
+
+        document.getElementById("acceptedCount").innerText =
+        accepted;
+    }
+
+    if (document.getElementById("resolvedCount")) {
+
+        document.getElementById("resolvedCount").innerText =
+        resolved;
+    }
+
+    if (document.getElementById("pendingCount")) {
+
+        document.getElementById("pendingCount").innerText =
+        pending;
+    }
+
+    if (document.getElementById("rejectedCount")) {
+
+        document.getElementById("rejectedCount").innerText =
+        rejected;
+    }
+}
+
+/* ================= FILTER COMPLAINTS ================= */
+
+function filterComplaints(group) {
+
+    currentCategory =
+    group;
+
+    renderComplaints();
+}
+
+/* ================= STATUS UPDATE ================= */
+
+function sendStatusUpdate(id, status) {
+
+    let adminMessage =
+    prompt(
+        `Enter message for ${status}:`
+    );
+
+    if (adminMessage === null) {
+
+        return;
+    }
+
+    fetch("/update_status", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+            id: id,
+
+            status: status,
+
+            admin_message: adminMessage
+
+        })
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        console.log("STATUS UPDATE RESPONSE:", data);
+
+        if (
+            data.status === "updated" ||
+            data.status === "updated_mail_failed"
+        ) {
+
+            if (data.status === "updated_mail_failed") {
+
+                alert(
+                    "Status updated, but email was not sent."
+                );
+
+            } else {
+
+                alert(
+                    "Status updated and email sent successfully."
+                );
+            }
+
+            loadComplaints();
+
+        } else if (data.status === "reason_required") {
+
+            alert(
+                "Reason is required for rejection."
+            );
+
+        } else {
+
+            alert(
+                "Status update failed: " +
+                (data.message || data.status)
+            );
+        }
+
+    })
+
+
+    
+}
+
+/* ================= REJECT COMPLAINT ================= */
+
+function rejectComplaint(id) {
+
+    let reason =
+    prompt(
+        "Enter valid rejection reason:"
+    );
+
+    if (!reason || reason.trim() === "") {
+
+        alert(
+            "Rejection reason required"
+        );
+
+        return;
+    }
+
+    let adminMessage =
+    prompt(
+        "Enter additional message for user:"
+    );
+
+    if (adminMessage === null) {
+
+        adminMessage = "";
+    }
+
+    fetch("/update_status", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+            id: id,
+
+            status: "Rejected",
+
+            reason: reason,
+
+            admin_message: adminMessage
+
+        })
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        console.log("REJECT RESPONSE:", data);
+
+        if (
+            data.status === "updated" ||
+            data.status === "updated_mail_failed"
+        ) {
+
+            if (data.status === "updated_mail_failed") {
+
+                alert(
+                    "Rejected successfully, but email was not sent."
+                );
+
+            } else {
+
+                alert(
+                    "Complaint rejected and email sent successfully."
+                );
+            }
+
+            loadComplaints();
+
+        } else {
+
+            alert(
+                "Reject failed: " +
+                (data.message || data.status)
+            );
+        }
+
+    })
+
+    .catch(error => {
+
+        console.log(
+            "REJECT ERROR:",
+            error
+        );
+
+        alert(
+            "Reject request failed."
+        );
+
+    });
+}
+
+/* ================= TRANSLATE ================= */
+
+function translateComplaintById(id) {
+
+    const complaint =
+    allComplaints.find(
+        c => String(c.id) === String(id)
+    );
+
+    if (!complaint) {
+
+        alert(
+            "Complaint not found for translation."
+        );
+
+        return;
+    }
+
+    translateComplaint(
+        id,
+        complaint.complaint || ""
+    );
+}
+
+function translateComplaint(id, text) {
+
+    let lang =
+    document.getElementById(
+        `lang-${id}`
+    ).value;
+
+    fetch("/translate", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+            text: text,
+
+            lang: lang
+
+        })
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        let box =
+        document.getElementById(
+            `translation-${id}`
+        );
+
+        box.style.display =
+        "block";
+
+        box.innerHTML = `
+
+            <b>
+                Translated Text:
+            </b>
+
+            <br><br>
+
+            ${escapeHtml(data.translation || "Translation failed")}
+
+        `;
+
+    })
+
+    .catch(error => {
+
+        console.log(
+            "TRANSLATE ERROR:",
+            error
+        );
+
+        alert(
+            "Translation failed."
+        );
+
+    });
+}
+
+/* ================= SEARCH ================= */
+
+document.getElementById("searchInput").oninput = function() {
+
+    let val =
+    this.value.toLowerCase();
+
+    document
+    .querySelectorAll(".card")
+    .forEach(card => {
+
+        card.style.display =
+        card.innerText
+        .toLowerCase()
+        .includes(val)
+
+        ?
+
+        "block"
+
+        :
+
+        "none";
+    });
+};
+
+/* ================= THEME ================= */
+
+const themeBtn =
+document.getElementById("themeToggle");
+
+if (
+    localStorage.getItem("admin_theme") === "light"
+) {
+
+    document.body.classList.add("light");
+
+    themeBtn.innerText =
+    "☀️";
+}
+
+themeBtn.onclick = () => {
+
+    document.body.classList.toggle("light");
+
+    if (
+        document.body.classList.contains("light")
+    ) {
+
+        localStorage.setItem(
+            "admin_theme",
+            "light"
+        );
+
+        themeBtn.innerText =
+        "☀️";
+
+    } else {
+
+        localStorage.setItem(
+            "admin_theme",
+            "dark"
+        );
+
+        themeBtn.innerText =
+        "🌙";
+    }
+};
+
+/* ================= LOGOUT ================= */
+
+function logout() {
+
+    if (autoRefresh) {
+
+        clearInterval(autoRefresh);
+
+    }
+
+    localStorage.clear();
+
+    window.location.href = "/admin_logout";
+
+}
+
+/* ================= ESCAPE HTML ================= */
+
+function escapeHtml(value) {
+
+    return String(value)
+
+    .replaceAll("&", "&amp;")
+
+    .replaceAll("<", "&lt;")
+
+    .replaceAll(">", "&gt;")
+
+    .replaceAll('"', "&quot;")
+
+    .replaceAll("'", "&#039;");
+}
+
+/* ================= AUTO LOAD ================= */
+
+loadComplaints();
+
+let autoRefresh = setInterval(() => {
+
+    const activeTranslation =
+    document.querySelector(
+        '.translation-box[style*="block"]'
+    );
+
+    if (!activeTranslation) {
+
+        loadComplaints();
+    }
+
+}, 10000);
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2739 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <title>AI Face Login</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ================= GLOBAL RESET ================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            width: 100%;
+            min-height: 100%;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            font-family: "Inter", sans-serif;
+            background: #08111f;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        button,
+        input,
+        select {
+            font-family: inherit;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+        }
+
+        img,
+        video {
+            max-width: 100%;
+        }
+
+        :root {
+            --bg-main: #08111f;
+            --bg-card: #101a2c;
+            --bg-card-2: #0d1626;
+            --bg-input: #f8fafc;
+            --border: rgba(148, 163, 184, 0.22);
+            --border-strong: rgba(148, 163, 184, 0.35);
+            --text-main: #f8fafc;
+            --text-soft: #cbd5e1;
+            --text-muted: #94a3b8;
+            --blue: #3b82f6;
+            --cyan: #22d3ee;
+            --green: #22c55e;
+            --red: #ef4444;
+            --orange: #f59e0b;
+            --purple: #8b5cf6;
+            --shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
+            --radius-xl: 30px;
+            --radius-lg: 22px;
+            --radius-md: 16px;
+        }
+
+        /* ================= BACKGROUND ================= */
+
+        .app-bg {
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.20), transparent 32%),
+                radial-gradient(circle at 90% 90%, rgba(34, 211, 238, 0.16), transparent 34%),
+                linear-gradient(135deg, #020617 0%, #08111f 52%, #0f172a 100%);
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-bg::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+            background-size: 44px 44px;
+            opacity: 0.45;
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent);
+        }
+
+        /* ================= MAIN LAYOUT ================= */
+
+        .login-shell {
+            width: 100%;
+            max-width: 1180px;
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 430px;
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        /* ================= LEFT INFO PANEL ================= */
+
+        .info-panel {
+            min-height: 690px;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border);
+            background:
+                linear-gradient(145deg, rgba(16, 26, 44, 0.96), rgba(13, 22, 38, 0.86));
+            box-shadow: var(--shadow);
+            padding: 44px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .info-panel::before {
+            content: "";
+            position: absolute;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            top: -150px;
+            right: -120px;
+            background: rgba(59, 130, 246, 0.18);
+        }
+
+        .info-panel::after {
+            content: "";
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            bottom: -130px;
+            left: -110px;
+            background: rgba(34, 211, 238, 0.11);
+        }
+
+        .info-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-badge {
+            width: fit-content;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            border-radius: 999px;
+            border: 1px solid rgba(96, 165, 250, 0.30);
+            background: rgba(96, 165, 250, 0.10);
+            color: #bfdbfe;
+            font-size: 13px;
+            font-weight: 800;
+            margin-bottom: 34px;
+        }
+
+        .brand-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 18px rgba(34, 197, 94, 0.75);
+        }
+
+        .main-title {
+            max-width: 720px;
+            font-size: clamp(42px, 5vw, 68px);
+            line-height: 1.03;
+            letter-spacing: -2.4px;
+            font-weight: 900;
+            margin-bottom: 24px;
+        }
+
+        .main-title span {
+            background: linear-gradient(90deg, #60a5fa, #22d3ee);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .main-desc {
+            max-width: 680px;
+            color: var(--text-soft);
+            font-size: 17px;
+            line-height: 1.8;
+        }
+
+        .feature-grid {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 38px;
+        }
+
+        .feature-card {
+            border-radius: 22px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.055);
+            backdrop-filter: blur(14px);
+            transition: 0.25s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.075);
+            border-color: rgba(96, 165, 250, 0.35);
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            font-size: 20px;
+            background: rgba(59, 130, 246, 0.13);
+            color: #93c5fd;
+        }
+
+        .feature-card h3 {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .info-footer {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-top: 34px;
+            padding-top: 22px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .secure-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #86efac;
+            font-weight: 800;
+        }
+
+        /* ================= AUTH CARD ================= */
+
+        .auth-card {
+            min-height: 690px;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border);
+            background: rgba(16, 26, 44, 0.96);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-heading {
+            display: none;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .mobile-heading h1 {
+            font-size: 30px;
+            line-height: 1.1;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .mobile-heading h1 span {
+            color: #60a5fa;
+        }
+
+        .mobile-heading p {
+            margin-top: 8px;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .auth-header {
+            text-align: center;
+            padding: 4px 0 16px;
+        }
+
+        .auth-logo {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 13px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #22d3ee, #3b82f6, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 18px 36px rgba(59, 130, 246, 0.24);
+        }
+
+        .auth-header h2 {
+            font-size: 27px;
+            font-weight: 900;
+            letter-spacing: -0.8px;
+        }
+
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        /* ================= CAMERA ================= */
+
+        .camera-card {
+            border: 1px solid var(--border);
+            background: #020617;
+            border-radius: 24px;
+            padding: 14px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .video-box {
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #000;
+            aspect-ratio: 16 / 10;
+        }
+
+        video {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .scan-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #22d3ee, transparent);
+            box-shadow: 0 0 18px rgba(34, 211, 238, 0.85);
+            animation: scan 2.4s linear infinite;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 0;
+            }
+
+            100% {
+                top: 100%;
+            }
+        }
+
+        .progress-track {
+            height: 7px;
+            width: 100%;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            margin-top: 14px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #22d3ee, #3b82f6);
+            transition: 0.2s ease;
+        }
+
+        #status {
+            text-align: center;
+            margin: 14px 0 0;
+            font-weight: 800;
+            color: #e2e8f0;
+            font-size: 14px;
+        }
+
+        #otpStatus {
+            min-height: 20px;
+            margin-top: 8px;
+            font-size: 13px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        #timerText {
+            min-height: 18px;
+            margin-top: 4px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .primary-btn {
+            width: 100%;
+            min-height: 48px;
+            border-radius: 15px;
+            color: white;
+            font-size: 15px;
+            font-weight: 850;
+            background: linear-gradient(90deg, #22d3ee, #3b82f6, #8b5cf6);
+            box-shadow: 0 16px 34px rgba(59, 130, 246, 0.22);
+            transition: 0.22s ease;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.07);
+        }
+
+        .primary-btn:active {
+            transform: translateY(0);
+        }
+
+        .face-btn {
+            margin-top: 14px;
+        }
+
+        .secondary-btn {
+            width: 100%;
+            min-height: 46px;
+            border-radius: 14px;
+            color: #e2e8f0;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            font-size: 14px;
+            font-weight: 850;
+            transition: 0.22s ease;
+        }
+
+        .secondary-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.13);
+        }
+
+        .secondary-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .admin-login-btn {
+            width: 100%;
+            min-height: 48px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            box-shadow: 0 16px 34px rgba(37, 99, 235, 0.22);
+            transition: 0.22s ease;
+        }
+
+        .admin-login-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+        }
+
+        /* ================= FORMS ================= */
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0 16px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: var(--border);
+        }
+
+        .tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 5px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.055);
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            min-height: 42px;
+            border-radius: 12px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 850;
+            transition: 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .form-section {
+            display: none;
+            animation: fadeUp 0.25s ease;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            height: 48px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            background: rgba(255, 255, 255, 0.96);
+            color: #0f172a;
+            padding: 0 15px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #64748b;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.16);
+        }
+
+        .help-text {
+            color: var(--text-muted);
+            text-align: center;
+            font-size: 12.5px;
+            line-height: 1.6;
+            margin-top: 13px;
+        }
+
+        .register-note {
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.18);
+            color: #bbf7d0;
+            font-size: 12.5px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        /* ================= OTP BLOCKS ================= */
+
+        .otp-section {
+            width: 100%;
+            margin-top: 6px;
+            padding: 16px;
+            border-radius: 20px;
+            background: rgba(15, 23, 42, 0.78);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.04),
+                0 18px 40px rgba(0, 0, 0, 0.22);
+            display: none;
+            animation: fadeUp 0.25s ease;
+        }
+
+        .otp-section.show {
+            display: block;
+        }
+
+        .otp-small-title {
+            margin: 0 0 12px;
+            text-align: center;
+            color: #e5e7eb;
+            font-size: 14px;
+            font-weight: 900;
+            letter-spacing: 0.3px;
+        }
+
+        .otp-box-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .otp-box {
+            width: 46px;
+            height: 54px;
+            border: 1.5px solid rgba(148, 163, 184, 0.35);
+            border-radius: 15px;
+            background: rgba(2, 6, 23, 0.75);
+            color: #ffffff;
+            text-align: center;
+            font-size: 23px;
+            font-weight: 900;
+            outline: none;
+            transition: 0.25s ease;
+            padding: 0;
+            box-shadow:
+                0 10px 24px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .otp-box:focus {
+            border-color: #22d3ee;
+            box-shadow:
+                0 0 0 4px rgba(34, 211, 238, 0.14),
+                0 0 25px rgba(34, 211, 238, 0.28);
+            transform: translateY(-2px);
+        }
+
+        .otp-box.filled {
+            border-color: #22c55e;
+            background: rgba(20, 83, 45, 0.45);
+            color: #dcfce7;
+        }
+
+        .otp-box.error {
+            border-color: #ef4444;
+            background: rgba(127, 29, 29, 0.42);
+            color: #fee2e2;
+            animation: shake 0.25s ease;
+        }
+
+        .otp-msg {
+            min-height: 20px;
+            margin: 12px 0 0;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .otp-msg.success {
+            color: #86efac;
+        }
+
+        .otp-msg.error {
+            color: #fca5a5;
+        }
+
+        .otp-msg.info {
+            color: #67e8f9;
+        }
+
+        .otp-resend-btn {
+            width: 100%;
+            margin-top: 13px;
+            padding: 13px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(30, 41, 59, 0.92);
+            color: #e5e7eb;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: 0.25s ease;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+        }
+
+        .otp-resend-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #22d3ee, #d946ef);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .otp-resend-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-4px);
+            }
+
+            50% {
+                transform: translateX(4px);
+            }
+
+            75% {
+                transform: translateX(-4px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+
+        /* ================= BACK TO HOME BUTTON ================= */
+
+        .back-home-wrap {
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        .back-home-btn {
+            width: 100%;
+            min-height: 46px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            background: rgba(255, 255, 255, 0.07);
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .back-home-btn:hover {
+            background: rgba(59, 130, 246, 0.18);
+            border-color: rgba(96, 165, 250, 0.55);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(37, 99, 235, 0.18);
+        }
+
+        /* ================= RESPONSIVE PC / TABLET ================= */
+
+        @media(max-width: 1100px) {
+
+            .app-bg {
+                padding: 22px;
+                align-items: flex-start;
+            }
+
+            .login-shell {
+                grid-template-columns: 1fr;
+                max-width: 760px;
+            }
+
+            .info-panel {
+                min-height: auto;
+            }
+
+            .auth-card {
+                min-height: auto;
+            }
+
+            .main-title {
+                font-size: clamp(38px, 7vw, 58px);
+            }
+
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media(max-width: 720px) {
+
+            .app-bg {
+                padding: 14px;
+                min-height: 100dvh;
+            }
+
+            .login-shell {
+                max-width: 100%;
+                gap: 0;
+            }
+
+            .info-panel {
+                display: none;
+            }
+
+            .auth-card {
+                width: 100%;
+                min-height: auto;
+                border-radius: 24px;
+                padding: 18px;
+            }
+
+            .mobile-heading {
+                display: block;
+            }
+
+            .auth-logo {
+                width: 52px;
+                height: 52px;
+                border-radius: 18px;
+                font-size: 25px;
+            }
+
+            .auth-header h2 {
+                font-size: 24px;
+            }
+
+            .auth-header p {
+                font-size: 13px;
+            }
+
+            .camera-card {
+                border-radius: 20px;
+                padding: 12px;
+            }
+
+            .video-box {
+                border-radius: 15px;
+                aspect-ratio: 4 / 3;
+            }
+
+            .primary-btn,
+            .secondary-btn,
+            input,
+            select {
+                min-height: 46px;
+                height: 46px;
+                font-size: 14px;
+            }
+
+            .otp-box-container {
+                gap: 7px;
+            }
+
+            .otp-box {
+                width: 42px;
+                height: 52px;
+                font-size: 21px;
+                border-radius: 13px;
+            }
+
+        }
+
+        /* ================= SMALL MOBILE ================= */
+
+        @media(max-width: 420px) {
+
+            .app-bg {
+                padding: 10px;
+            }
+
+            .auth-card {
+                border-radius: 20px;
+                padding: 15px;
+            }
+
+            .mobile-heading h1 {
+                font-size: 26px;
+            }
+
+            .auth-header h2 {
+                font-size: 22px;
+            }
+
+            .tabs {
+                margin-bottom: 12px;
+            }
+
+            .divider {
+                margin: 16px 0 13px;
+            }
+
+            .input-group {
+                gap: 10px;
+            }
+
+            .otp-section {
+                padding: 14px;
+            }
+
+            .otp-box-container {
+                gap: 6px;
+            }
+
+            .otp-box {
+                width: 36px;
+                height: 48px;
+                font-size: 19px;
+                border-radius: 12px;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <main class="app-bg">
+
+        <div class="login-shell">
+
+            <!-- ================= LEFT PANEL FOR PC ================= -->
+            <section class="info-panel">
+
+                <div class="info-content">
+
+                    <div class="brand-badge">
+                        <span class="brand-dot"></span>
+                        AI Complaint Management
+                    </div>
+
+                    <h1 class="main-title">
+                        Secure Login for <span>Smart Campus</span>
+                    </h1>
+
+                    <p class="main-desc">
+                        A clean and intelligent complaint management portal for students, staff,
+                        security and administrators with face authentication, OTP verification,
+                        complaint tracking and email notifications.
+                    </p>
+
+                    <div class="feature-grid">
+
+                        <div class="feature-card">
+                            <div class="feature-icon">😊</div>
+                            <h3>Face Authentication</h3>
+                            <p>
+                                Login securely using your registered face profile.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">📋</div>
+                            <h3>Complaint Tracking</h3>
+                            <p>
+                                Submit complaints and track accepted, rejected or resolved status.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">📩</div>
+                            <h3>Email Notifications</h3>
+                            <p>
+                                Receive professional status updates directly on registered email.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🌐</div>
+                            <h3>Language Support</h3>
+                            <p>
+                                Translate complaint details into selected languages for better review.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="info-footer">
+
+                    <span>
+                        Smart Complaint Moderation System
+                    </span>
+
+                    <span class="secure-status">
+                        ● Secure Access Enabled
+                    </span>
+
+                </div>
+
+            </section>
+
+            <!-- ================= RIGHT LOGIN CARD ================= -->
+            <section class="auth-card">
+
+                <div class="mobile-heading">
+
+                    <h1>
+                        AI <span>Complaint</span>
+                    </h1>
+
+                    <p>
+                        Face login and complaint management portal
+                    </p>
+
+                </div>
+
+                <div class="auth-header">
+
+                    <div class="auth-logo">
+                        🤖
+                    </div>
+
+                    <h2>
+                        AI Face Login
+                    </h2>
+
+                    <p>
+                        Login with face recognition or manual credentials
+                    </p>
+
+                </div>
+
+                <div class="camera-card">
+
+                    <div class="video-box">
+
+                        <video id="video" autoplay muted playsinline>
+                        </video>
+
+                        <div class="scan-line"></div>
+
+                    </div>
+
+                    <div class="progress-track">
+                        <div id="fill" class="progress-fill">
+                        </div>
+                    </div>
+
+                    <p id="status">
+                        Ready
+                    </p>
+
+                    <p id="otpStatus"></p>
+
+                    <p id="timerText"></p>
+
+                </div>
+
+                <button class="primary-btn face-btn" onclick="faceLogin()">
+                    ⚡ Face Login
+                </button>
+
+                <div class="divider">
+                    Manual Access
+                </div>
+
+                <div class="tabs">
+
+                    <button class="tab-btn active" id="loginTab" onclick="showTab('login')">
+                        Login
+                    </button>
+
+                    <button class="tab-btn" id="registerTab" onclick="showTab('register')">
+                        Register
+                    </button>
+
+                </div>
+
+
+
+                <!-- ================= LOGIN SECTION ================= -->
+                <div class="form-section active" id="loginSection">
+
+                    <div class="input-group">
+
+                        <input id="identifier" autocomplete="username" placeholder="PRN / StaffID / SecurityID">
+
+                        <input id="password" type="password" autocomplete="current-password" placeholder="Password">
+
+                        <button class="primary-btn" onclick="manualLogin()">
+                            Login
+                        </button>
+
+                        <!-- LOGIN OTP BLOCKS -->
+                        <div id="loginOtpSection" class="otp-section">
+
+                            <p class="otp-small-title">
+                                Enter Login OTP
+                            </p>
+
+                            <div class="otp-box-container">
+
+                                <input type="text" maxlength="1" class="otp-box login-otp" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box login-otp" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box login-otp" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box login-otp" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box login-otp" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box login-otp" inputmode="numeric">
+
+                            </div>
+
+                            <p id="loginOtpMsg" class="otp-msg">
+                            </p>
+
+                            <button class="otp-resend-btn" id="resendBtn" onclick="resendOTP()" disabled>
+                                Resend OTP
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <p class="help-text">
+                        After successful manual or face login, OTP will be sent to your registered email.
+                    </p>
+
+                </div>
+
+                <!-- ================= REGISTER SECTION ================= -->
+                <!-- ================= REGISTER SECTION ================= -->
+                <div class="form-section" id="registerSection">
+
+                    <div class="register-note">
+                        Keep your face clearly visible while registering. This face will be used for future login.
+                    </div>
+
+                    <div class="input-group">
+
+                        <input id="name" autocomplete="name" placeholder="Full Name">
+
+                        <input id="identifier_reg" autocomplete="off" placeholder="PRN / StaffID / SecurityID">
+
+                        <input id="email" type="email" autocomplete="email" placeholder="Email">
+
+                        <input id="password_reg" type="password" autocomplete="new-password" placeholder="Password">
+
+                        <!-- IMPORTANT: role is auto-filled from URL /login/student -->
+                        <input type="hidden" id="role" value="{{ role }}">
+
+                        <select id="department">
+                            <option value="">Select Department</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Civil">Civil</option>
+                            <option value="Mechanical">Mechanical</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="General">General</option>
+                        </select>
+
+                        <select id="course">
+                            <option value="">Select Course</option>
+                            <option value="Diploma">Diploma</option>
+                            <option value="B.Tech">B.Tech</option>
+                            <option value="M.Tech">M.Tech</option>
+                            <option value="Staff">Staff</option>
+                            <option value="Security">Security</option>
+                            <option value="Other">Other</option>
+                        </select>
+
+                        <button type="button" class="primary-btn" id="sendRegisterOtpBtn" onclick="sendRegisterOTP()">
+                            Send OTP
+                        </button>
+
+                        <!-- REGISTER OTP BLOCKS -->
+                        <div id="registerOtpSection" class="otp-section">
+
+                            <p class="otp-small-title">
+                                Enter Registration OTP
+                            </p>
+
+                            <div class="otp-box-container">
+
+                                <input type="text" maxlength="1" class="otp-box register-otp" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box register-otp" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box register-otp" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box register-otp" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box register-otp" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box register-otp" inputmode="numeric">
+
+                            </div>
+
+                            <p id="registerOtpMsg" class="otp-msg">
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="back-home-wrap">
+                    <button type="button" class="back-home-btn" onclick="goHome()">
+                        ← Back to Home
+                    </button>
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+<script>
+
+        // ================= INIT =================
+
+        const video = document.getElementById("video");
+
+        const fill = document.getElementById("fill");
+
+        const statusText = document.getElementById("status");
+
+        const otpStatus = document.getElementById("otpStatus");
+
+        let otpTimer;
+
+        let countdown = 30;
+
+        let loginAttempts = 0;
+
+        // ================= ADMIN LOGIN =================
+
+        function openAdminLogin() {
+
+            localStorage.setItem("role", "admin");
+
+            window.location.href = "/admin";
+
+        }
+
+        // ================= BACK TO HOME =================
+
+        function goHome() {
+
+            localStorage.removeItem("role");
+
+            window.location.href = "/";
+
+        }
+
+        // ================= TAB SWITCH =================
+
+        function showTab(type) {
+
+            const loginSection =
+                document.getElementById("loginSection");
+
+            const registerSection =
+                document.getElementById("registerSection");
+
+            const loginTab =
+                document.getElementById("loginTab");
+
+            const registerTab =
+                document.getElementById("registerTab");
+
+            if (type === "login") {
+
+                loginSection.classList.add("active");
+
+                registerSection.classList.remove("active");
+
+                loginTab.classList.add("active");
+
+                registerTab.classList.remove("active");
+
+            } else {
+
+                registerSection.classList.add("active");
+
+                loginSection.classList.remove("active");
+
+                registerTab.classList.add("active");
+
+                loginTab.classList.remove("active");
+
+            }
+
+        }
+
+        // ================= CAMERA =================
+
+        function startCamera() {
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+
+                statusText.innerText =
+                    "Camera not supported";
+
+                alert("Camera not supported on this browser ❌");
+
+                return;
+
+            }
+
+            navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: "user",
+                    width: {
+                        ideal: 640
+                    },
+                    height: {
+                        ideal: 480
+                    }
+                },
+                audio: false
+            })
+            .then(stream => {
+
+                video.srcObject =
+                    stream;
+
+                statusText.innerText =
+                    "Camera Ready";
+
+            })
+            .catch(err => {
+
+                console.error("CAMERA ERROR:", err);
+
+                statusText.innerText =
+                    "Camera not accessible";
+
+                alert("Camera not accessible ❌");
+
+            });
+
+        }
+
+        startCamera();
+
+        // ================= CAPTURE =================
+
+        function capture() {
+
+            if (!video) {
+
+                return null;
+
+            }
+
+            const canvas =
+                document.createElement("canvas");
+
+            const width =
+                video.videoWidth || 640;
+
+            const height =
+                video.videoHeight || 480;
+
+            canvas.width =
+                width;
+
+            canvas.height =
+                height;
+
+            canvas
+                .getContext("2d")
+                .drawImage(video, 0, 0, width, height);
+
+            return canvas.toDataURL("image/jpeg", 0.85);
+
+        }
+
+        // ================= ROLE AUTO REDIRECT =================
+
+        const urlRole =
+            window.location.pathname.split("/").pop();
+
+        const storedRole =
+            localStorage.getItem("role");
+
+        if (
+            storedRole &&
+            storedRole !== "admin" &&
+            urlRole &&
+            urlRole !== storedRole &&
+            window.location.pathname.includes("/login/")
+        ) {
+
+            window.location.href =
+                "/login/" + storedRole;
+
+        }
+
+        // ================= TIMER =================
+
+        function startTimer() {
+
+            const resendBtn =
+                document.getElementById("resendBtn");
+
+            const timerText =
+                document.getElementById("timerText");
+
+            if (!resendBtn || !timerText) {
+
+                return;
+
+            }
+
+            countdown =
+                30;
+
+            resendBtn.disabled =
+                true;
+
+            clearInterval(otpTimer);
+
+            timerText.innerText =
+                "⏳ Resend in " + countdown + " sec";
+
+            otpTimer =
+                setInterval(() => {
+
+                    countdown--;
+
+                    timerText.innerText =
+                        "⏳ Resend in " + countdown + " sec";
+
+                    if (countdown <= 0) {
+
+                        clearInterval(otpTimer);
+
+                        resendBtn.disabled =
+                            false;
+
+                        timerText.innerText =
+                            "You can resend OTP";
+
+                    }
+
+                }, 1000);
+
+        }
+
+        // ================= OTP BLOCK SYSTEM =================
+
+        function setupOtpBoxes(type) {
+
+            const boxes =
+                document.querySelectorAll("." + type + "-otp");
+
+            boxes.forEach((box, index) => {
+
+                box.addEventListener("input", function () {
+
+                    this.value =
+                        this.value.replace(/[^0-9]/g, "");
+
+                    if (this.value !== "") {
+
+                        this.classList.add("filled");
+
+                        this.classList.remove("error");
+
+                        if (index < boxes.length - 1) {
+
+                            boxes[index + 1].focus();
+
+                        }
+
+                    }
+
+                    const otp =
+                        getOtpValue(type);
+
+                    if (otp.length === 6) {
+
+                        if (type === "login") {
+
+                            verifyLoginOTPAuto(otp);
+
+                        }
+
+                        if (type === "register") {
+
+                            verifyRegisterAuto(otp);
+
+                        }
+
+                    }
+
+                });
+
+                box.addEventListener("keydown", function (e) {
+
+                    if (
+                        e.key === "Backspace" &&
+                        this.value === "" &&
+                        index > 0
+                    ) {
+
+                        boxes[index - 1].focus();
+
+                        boxes[index - 1].value =
+                            "";
+
+                        boxes[index - 1].classList.remove("filled");
+
+                    }
+
+                });
+
+                box.addEventListener("paste", function (e) {
+
+                    e.preventDefault();
+
+                    let pasteData =
+                        e.clipboardData
+                            .getData("text")
+                            .replace(/[^0-9]/g, "");
+
+                    if (pasteData.length === 6) {
+
+                        boxes.forEach((input, i) => {
+
+                            input.value =
+                                pasteData[i];
+
+                            input.classList.add("filled");
+
+                            input.classList.remove("error");
+
+                        });
+
+                        if (type === "login") {
+
+                            verifyLoginOTPAuto(pasteData);
+
+                        }
+
+                        if (type === "register") {
+
+                            verifyRegisterAuto(pasteData);
+
+                        }
+
+                    }
+
+                });
+
+            });
+
+        }
+
+        function getOtpValue(type) {
+
+            let otp =
+                "";
+
+            document
+                .querySelectorAll("." + type + "-otp")
+                .forEach(box => {
+
+                    otp +=
+                        box.value;
+
+                });
+
+            return otp;
+
+        }
+
+        function resetOtpBoxes(type) {
+
+            const boxes =
+                document.querySelectorAll("." + type + "-otp");
+
+            boxes.forEach(box => {
+
+                box.value =
+                    "";
+
+                box.classList.remove("filled");
+
+                box.classList.add("error");
+
+            });
+
+            setTimeout(() => {
+
+                boxes.forEach(box => {
+
+                    box.classList.remove("error");
+
+                });
+
+                if (boxes.length > 0) {
+
+                    boxes[0].focus();
+
+                }
+
+            }, 350);
+
+        }
+
+        function clearOtpBoxes(type) {
+
+            const boxes =
+                document.querySelectorAll("." + type + "-otp");
+
+            boxes.forEach(box => {
+
+                box.value =
+                    "";
+
+                box.classList.remove("filled");
+
+                box.classList.remove("error");
+
+            });
+
+            if (boxes.length > 0) {
+
+                boxes[0].focus();
+
+            }
+
+        }
+
+        function showOtpMsg(type, message, status) {
+
+            const msg =
+                document.getElementById(
+                    type === "login" ? "loginOtpMsg" : "registerOtpMsg"
+                );
+
+            if (!msg) {
+
+                return;
+
+            }
+
+            msg.innerText =
+                message;
+
+            msg.className =
+                "otp-msg " + status;
+
+        }
+
+        function showOtpSection(type) {
+
+            const section =
+                document.getElementById(
+                    type === "login" ? "loginOtpSection" : "registerOtpSection"
+                );
+
+            if (!section) {
+
+                return;
+
+            }
+
+            section.classList.add("show");
+
+            setTimeout(() => {
+
+                const firstBox =
+                    document.querySelector("." + type + "-otp");
+
+                if (firstBox) {
+
+                    firstBox.focus();
+
+                }
+
+            }, 250);
+
+        }
+
+        setupOtpBoxes("login");
+
+        setupOtpBoxes("register");
+
+        // ================= FACE LOGIN =================
+
+        function faceLogin() {
+
+            let progress =
+                0;
+
+            fill.style.width =
+                "0%";
+
+            statusText.innerText =
+                "Scanning face...";
+
+            const interval =
+                setInterval(() => {
+
+                    progress +=
+                        10;
+
+                    fill.style.width =
+                        progress + "%";
+
+                    if (progress >= 100) {
+
+                        clearInterval(interval);
+
+                        fetch('/login_face', {
+
+                            method: 'POST',
+
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+
+                            body: JSON.stringify({
+                                image: capture()
+                            })
+
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+
+                            if (data.status === "success") {
+
+                                localStorage.setItem("user", data.user || data.name);
+                                localStorage.setItem("name", data.user || data.name);
+
+                                localStorage.setItem("role", data.role);
+
+                                localStorage.setItem("identifier", data.identifier);
+
+                                statusText.innerText =
+                                    "Face Matched ✅";
+
+                                sendLoginOTP(data.identifier);
+
+                            } else {
+
+                                statusText.innerText =
+                                data.message || "Face Not Matched ❌";
+
+                            }
+
+                        })
+                        .catch(err => {
+
+                            console.error(err);
+
+                            statusText.innerText =
+                                "Error ❌";
+
+                        });
+
+                    }
+
+                }, 100);
+
+        }
+
+        // ================= MANUAL LOGIN =================
+
+        function manualLogin() {
+
+            const idInput =
+                document.getElementById("identifier");
+
+            const passInput =
+                document.getElementById("password");
+
+            if (!idInput || !passInput) {
+
+                alert("Login fields missing ❌");
+
+                return;
+
+            }
+
+            const idVal =
+                idInput.value.trim();
+
+            const passVal =
+                passInput.value.trim();
+
+            if (!idVal || !passVal) {
+
+                alert("Enter credentials ❌");
+
+                return;
+
+            }
+
+            statusText.innerText =
+                "Checking credentials...";
+
+            fetch('/login_password', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    identifier: idVal,
+                    password: passVal
+                })
+
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.status === "success") {
+
+                    localStorage.setItem("user", data.name);
+                    localStorage.setItem("name", data.name);
+
+                    localStorage.setItem("role", data.role);
+
+                    localStorage.setItem("identifier", data.identifier);
+
+                    statusText.innerText =
+                        "Credentials Verified ✅";
+
+                    sendLoginOTP(idVal);
+
+                } else {
+
+                    statusText.innerText =
+                        "Invalid credentials ❌";
+
+                    alert("Invalid credentials ❌");
+
+                }
+
+            })
+            .catch(err => {
+
+                console.error(err);
+
+                statusText.innerText =
+                    "Server error ❌";
+
+                alert("Server error ❌");
+
+            });
+
+        }
+
+        // ================= SEND LOGIN OTP =================
+
+        function sendLoginOTP(identifier) {
+
+            otpStatus.innerText =
+                "📤 Sending OTP...";
+
+            otpStatus.style.color =
+                "#e2e8f0";
+
+            showOtpSection("login");
+
+            clearOtpBoxes("login");
+
+            showOtpMsg(
+                "login",
+                "Sending OTP to your registered email...",
+                "info"
+            );
+
+            fetch('/send_otp_login', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    identifier: identifier
+                })
+
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.status === "otp_sent") {
+
+                    localStorage.setItem("email", data.email);
+
+                    otpStatus.innerText =
+                        "✅ OTP sent to email";
+
+                    otpStatus.style.color =
+                        "#86efac";
+
+                    showOtpMsg(
+                        "login",
+                        "OTP sent successfully. Enter 6 digits.",
+                        "success"
+                    );
+
+                    showOtpSection("login");
+
+                    startTimer();
+
+                } else {
+
+                    otpStatus.innerText =
+                        "❌ OTP send failed";
+
+                    otpStatus.style.color =
+                        "#fca5a5";
+
+                    showOtpMsg(
+                        "login",
+                        "OTP send failed. Try again.",
+                        "error"
+                    );
+
+                }
+
+            })
+            .catch(err => {
+
+                console.error(err);
+
+                otpStatus.innerText =
+                    "❌ Server error";
+
+                otpStatus.style.color =
+                    "#fca5a5";
+
+                showOtpMsg(
+                    "login",
+                    "Server error while sending OTP.",
+                    "error"
+                );
+
+            });
+
+        }
+
+        // ================= VERIFY LOGIN OTP AUTO =================
+
+        function verifyLoginOTPAuto(otpVal) {
+
+            if (!otpVal || otpVal.length !== 6) {
+
+                showOtpMsg(
+                    "login",
+                    "Enter complete 6 digit OTP.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+            otpStatus.innerText =
+                "🔍 Verifying...";
+
+            otpStatus.style.color =
+                "#e2e8f0";
+
+            showOtpMsg(
+                "login",
+                "Verifying OTP...",
+                "info"
+            );
+
+            fetch('/verify_login', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    email: localStorage.getItem("email"),
+                    otp: otpVal
+                })
+
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.status === "success") {
+
+                    otpStatus.innerText =
+                        "✅ Verified";
+
+                    otpStatus.style.color =
+                        "#86efac";
+
+                    showOtpMsg(
+                        "login",
+                        "OTP verified. Opening dashboard...",
+                        "success"
+                    );
+
+                    setTimeout(() => {
+
+                        window.location.href =
+                            "/dashboard/" + localStorage.getItem("user");
+
+                    }, 650);
+
+                } else if (data.status === "blocked") {
+
+                    showOtpMsg(
+                        "login",
+                        "Too many attempts. Please try later.",
+                        "error"
+                    );
+
+                    alert("🚨 Too many attempts!");
+
+                } else if (data.status === "expired") {
+
+                    showOtpMsg(
+                        "login",
+                        "OTP expired. Please resend OTP.",
+                        "error"
+                    );
+
+                    resetOtpBoxes("login");
+
+                } else {
+
+                    loginAttempts++;
+
+                    otpStatus.innerText =
+                        "❌ Invalid OTP (" + loginAttempts + "/3)";
+
+                    otpStatus.style.color =
+                        "#fca5a5";
+
+                    showOtpMsg(
+                        "login",
+                        "Invalid OTP. Try again.",
+                        "error"
+                    );
+
+                    resetOtpBoxes("login");
+
+                }
+
+            })
+            .catch(err => {
+
+                console.error(err);
+
+                otpStatus.innerText =
+                    "❌ Error verifying OTP";
+
+                otpStatus.style.color =
+                    "#fca5a5";
+
+                showOtpMsg(
+                    "login",
+                    "Error verifying OTP.",
+                    "error"
+                );
+
+                resetOtpBoxes("login");
+
+            });
+
+        }
+
+        // ================= OLD FUNCTION KEPT FOR SAFETY =================
+
+        function verifyLoginOTP() {
+
+            const otpVal =
+                getOtpValue("login");
+
+            verifyLoginOTPAuto(otpVal);
+
+        }
+
+        // ================= RESEND LOGIN OTP =================
+
+        function resendOTP() {
+
+            const identifier =
+                localStorage.getItem("identifier");
+
+            if (identifier) {
+
+                sendLoginOTP(identifier);
+
+            } else {
+
+                alert("Please login first ❌");
+
+            }
+
+        }
+
+        // ================= REGISTER HELPERS =================
+
+        function getRegisterValue(id) {
+
+            const element =
+                document.getElementById(id);
+
+            if (!element) {
+
+                console.error("Missing register field:", id);
+
+                alert("Missing field in index.html: " + id);
+
+                return null;
+
+            }
+
+            return element.value.trim();
+
+        }
+
+        function setRegisterButtonLoading(isLoading) {
+
+            const btn =
+                document.getElementById("sendRegisterOtpBtn");
+
+            if (!btn) {
+
+                return;
+
+            }
+
+            btn.disabled =
+                isLoading;
+
+            btn.innerText =
+                isLoading ? "Sending OTP..." : "Send OTP";
+
+        }
+
+        // ================= SEND REGISTER OTP =================
+
+        function sendRegisterOTP() {
+
+            const nameVal =
+                getRegisterValue("name");
+
+            const idVal =
+                getRegisterValue("identifier_reg");
+
+            const emailRaw =
+                getRegisterValue("email");
+
+            const passVal =
+                getRegisterValue("password_reg");
+
+            const roleRaw =
+                getRegisterValue("role");
+
+            const departmentVal =
+                getRegisterValue("department");
+
+            const courseVal =
+                getRegisterValue("course");
+
+            if (
+                nameVal === null ||
+                idVal === null ||
+                emailRaw === null ||
+                passVal === null ||
+                roleRaw === null ||
+                departmentVal === null ||
+                courseVal === null
+            ) {
+
+                return;
+
+            }
+
+            const emailVal =
+                emailRaw.toLowerCase();
+
+            const roleVal =
+                roleRaw.toLowerCase();
+
+            if (
+                !nameVal ||
+                !idVal ||
+                !emailVal ||
+                !passVal ||
+                !roleVal ||
+                !departmentVal ||
+                !courseVal
+            ) {
+
+                alert("Please fill all registration fields ❌");
+
+                return;
+
+            }
+
+            // ================= ALLOW ALL EMAIL DOMAINS =================
+            // Gmail, Outlook, Yahoo, college mail, etc.
+
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(emailVal)) {
+
+                alert("Please enter a valid email address ❌");
+
+                return;
+
+            }
+
+            setRegisterButtonLoading(true);
+
+            otpStatus.innerText =
+                "📤 Sending registration OTP...";
+
+            otpStatus.style.color =
+                "#e2e8f0";
+
+            showOtpSection("register");
+
+            clearOtpBoxes("register");
+
+            showOtpMsg(
+                "register",
+                "Sending registration OTP...",
+                "info"
+            );
+
+            fetch('/send_otp_register', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    name: nameVal,
+                    identifier: idVal,
+                    email: emailVal,
+                    password: passVal,
+                    role: roleVal,
+                    department: departmentVal,
+                    course: courseVal
+                })
+
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                console.log("REGISTER OTP RESPONSE:", data);
+
+                setRegisterButtonLoading(false);
+
+                if (data.status === "sent") {
+
+                    otpStatus.innerText =
+                        "✅ Registration OTP sent";
+
+                    otpStatus.style.color =
+                        "#86efac";
+
+                    showOtpMsg(
+                        "register",
+                        "OTP sent successfully. Enter 6 digits.",
+                        "success"
+                    );
+
+                    showOtpSection("register");
+
+                    const firstOtp =
+                        document.querySelector(".register-otp");
+
+                    if (firstOtp) {
+
+                        firstOtp.focus();
+
+                    }
+
+                } else if (data.status === "missing_fields") {
+
+                    otpStatus.innerText =
+                        "❌ All fields required";
+
+                    otpStatus.style.color =
+                        "#fca5a5";
+
+                    showOtpMsg(
+                        "register",
+                        "Please fill all registration fields.",
+                        "error"
+                    );
+
+                    alert("Please fill all registration fields ❌");
+
+                    resetOtpBoxes("register");
+
+                } else if (data.status === "invalid_email") {
+
+                    otpStatus.innerText =
+                        "❌ Invalid email";
+
+                    otpStatus.style.color =
+                        "#fca5a5";
+
+                    showOtpMsg(
+                        "register",
+                        "Please enter a valid email address.",
+                        "error"
+                    );
+
+                    alert("Please enter a valid email address ❌");
+
+                    resetOtpBoxes("register");
+
+                } else if (data.status === "prn_exists") {
+
+                    otpStatus.innerText =
+                        "❌ PRN already registered";
+
+                    otpStatus.style.color =
+                        "#fca5a5";
+
+                    showOtpMsg(
+                        "register",
+                        "This PRN / Identifier is already registered.",
+                        "error"
+                    );
+
+                    alert("PRN / Identifier already registered ❌");
+
+                    resetOtpBoxes("register");
+
+                } else if (data.status === "email_exists") {
+
+                    otpStatus.innerText =
+                        "❌ Email already registered";
+
+                    otpStatus.style.color =
+                        "#fca5a5";
+
+                    showOtpMsg(
+                        "register",
+                        "This email is already registered.",
+                        "error"
+                    );
+
+                    alert("Email already registered ❌");
+
+                    resetOtpBoxes("register");
+
+                } else if (data.status === "email_failed") {
+
+                    otpStatus.innerText =
+                        "❌ Failed to send OTP";
+
+                    otpStatus.style.color =
+                        "#fca5a5";
+
+                    showOtpMsg(
+                        "register",
+                        "Failed to send OTP. Check Gmail App Password.",
+                        "error"
+                    );
+
+                    alert("OTP email failed ❌");
+
+                    resetOtpBoxes("register");
+
+                } else {
+
+                    otpStatus.innerText =
+                        "❌ Failed to send OTP";
+
+                    otpStatus.style.color =
+                        "#fca5a5";
+
+                    showOtpMsg(
+                        "register",
+                        "Failed to send OTP. Check server console.",
+                        "error"
+                    );
+
+                    alert("OTP send failed ❌");
+
+                    resetOtpBoxes("register");
+
+                }
+
+            })
+            .catch(err => {
+
+                console.error(err);
+
+                setRegisterButtonLoading(false);
+
+                otpStatus.innerText =
+                    "❌ Server error";
+
+                otpStatus.style.color =
+                    "#fca5a5";
+
+                showOtpMsg(
+                    "register",
+                    "Server error while sending OTP.",
+                    "error"
+                );
+
+                alert("Server error while sending OTP ❌");
+
+                resetOtpBoxes("register");
+
+            });
+
+        }
+
+        // ================= VERIFY REGISTER AUTO =================
+
+        function verifyRegisterAuto(otpVal) {
+
+            const nameVal =
+                getRegisterValue("name");
+
+            const idVal =
+                getRegisterValue("identifier_reg");
+
+            const emailRaw =
+                getRegisterValue("email");
+
+            const passVal =
+                getRegisterValue("password_reg");
+
+            const roleRaw =
+                getRegisterValue("role");
+
+            const departmentVal =
+                getRegisterValue("department");
+
+            const courseVal =
+                getRegisterValue("course");
+
+            if (
+                nameVal === null ||
+                idVal === null ||
+                emailRaw === null ||
+                passVal === null ||
+                roleRaw === null ||
+                departmentVal === null ||
+                courseVal === null
+            ) {
+
+                return;
+
+            }
+
+            const emailVal =
+                emailRaw.toLowerCase();
+
+            const roleVal =
+                roleRaw.toLowerCase();
+
+            if (
+                !nameVal ||
+                !idVal ||
+                !emailVal ||
+                !passVal ||
+                !roleVal ||
+                !departmentVal ||
+                !courseVal ||
+                !otpVal
+            ) {
+
+                showOtpMsg(
+                    "register",
+                    "Fill all fields before verifying OTP.",
+                    "error"
+                );
+
+                alert("Fill all fields ❌");
+
+                resetOtpBoxes("register");
+
+                return;
+
+            }
+
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(emailVal)) {
+
+                showOtpMsg(
+                    "register",
+                    "Please enter a valid email address.",
+                    "error"
+                );
+
+                alert("Please enter a valid email address ❌");
+
+                resetOtpBoxes("register");
+
+                return;
+
+            }
+
+            const faceImage =
+                capture();
+
+            if (!faceImage) {
+
+                statusText.innerText =
+                    "Face image required ❌";
+
+                showOtpMsg(
+                    "register",
+                    "Camera image is required. Please allow camera.",
+                    "error"
+                );
+
+                resetOtpBoxes("register");
+
+                return;
+
+            }
+
+            statusText.innerText =
+                "Registering face profile...";
+
+            showOtpMsg(
+                "register",
+                "Verifying OTP and registering.",
+                "info"
+            );
+
+            fetch('/verify_register', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    name: nameVal,
+                    identifier: idVal,
+                    email: emailVal,
+                    password: passVal,
+                    role: roleVal,
+                    department: departmentVal,
+                    course: courseVal,
+                    image: faceImage,
+                    otp: otpVal
+                })
+
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                console.log("REGISTER RESPONSE:", data);
+
+                if (data.status === "registered") {
+
+                    statusText.innerText =
+                        "Registered Successfully ✅";
+
+                    showOtpMsg(
+                        "register",
+                        "Registration successful. You can login now.",
+                        "success"
+                    );
+
+                    setTimeout(() => {
+
+                        location.reload();
+
+                    }, 1000);
+
+                } else if (data.status === "expired") {
+
+                    statusText.innerText =
+                        "OTP expired ⏰";
+
+                    showOtpMsg(
+                        "register",
+                        "OTP expired. Please send OTP again.",
+                        "error"
+                    );
+
+                    resetOtpBoxes("register");
+
+                } else if (data.status === "invalid_email") {
+
+                    statusText.innerText =
+                        "Invalid email ❌";
+
+                    showOtpMsg(
+                        "register",
+                        "Please enter a valid email address.",
+                        "error"
+                    );
+
+                    resetOtpBoxes("register");
+
+                } else if (data.status === "prn_exists") {
+
+                    statusText.innerText =
+                        "PRN already registered ❌";
+
+                    showOtpMsg(
+                        "register",
+                        "This PRN / Identifier is already registered.",
+                        "error"
+                    );
+
+                    resetOtpBoxes("register");
+
+                } else if (data.status === "email_exists") {
+
+                    statusText.innerText =
+                        "Email already registered ❌";
+
+                    showOtpMsg(
+                        "register",
+                        "This email is already registered.",
+                        "error"
+                    );
+
+                    resetOtpBoxes("register");
+
+                } else if (data.status === "image_required") {
+
+                    statusText.innerText =
+                        "Face image required ❌";
+
+                    showOtpMsg(
+                        "register",
+                        "Camera image is required. Please allow camera.",
+                        "error"
+                    );
+
+                    resetOtpBoxes("register");
+
+                } else if (data.status === "missing_fields") {
+
+                    statusText.innerText =
+                        "All fields required ❌";
+
+                    showOtpMsg(
+                        "register",
+                        "Please fill all registration fields.",
+                        "error"
+                    );
+
+                    resetOtpBoxes("register");
+
+                } else {
+
+                    statusText.innerText =
+                        "Invalid OTP ❌";
+
+                    showOtpMsg(
+                        "register",
+                        "Invalid OTP. Try again.",
+                        "error"
+                    );
+
+                    resetOtpBoxes("register");
+
+                }
+
+            })
+            .catch(err => {
+
+                console.error("VERIFY REGISTER ERROR:", err);
+
+                statusText.innerText =
+                    "Server error ❌";
+
+                showOtpMsg(
+                    "register",
+                    "Server error while registering.",
+                    "error"
+                );
+
+                resetOtpBoxes("register");
+
+            });
+
+        }
+
+        // ================= OLD FUNCTION KEPT FOR SAFETY =================
+
+        function verifyRegister() {
+
+            const otpVal =
+                getOtpValue("register");
+
+            verifyRegisterAuto(otpVal);
+
+        }
+
+</script>
+
+</body>
+
+</html>

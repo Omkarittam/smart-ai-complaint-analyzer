@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Admin Login | AI Complaint System
+    </title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: #ffffff;
+            background:
+                radial-gradient(circle at top left, rgba(59,130,246,0.22), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(14,165,233,0.18), transparent 35%),
+                linear-gradient(135deg, #020617, #0f172a 55%, #020617);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            padding: 24px;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 45px 45px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            pointer-events: none;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 28px;
+            align-items: stretch;
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-panel,
+        .login-card {
+            background: rgba(15, 23, 42, 0.78);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow:
+                0 30px 80px rgba(0,0,0,0.45),
+                inset 0 1px 0 rgba(255,255,255,0.06);
+            backdrop-filter: blur(18px);
+            border-radius: 28px;
+        }
+
+        .info-panel {
+            padding: 42px;
+            min-height: 560px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-panel::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            right: -90px;
+            top: -90px;
+            background: linear-gradient(135deg, rgba(59,130,246,0.45), rgba(34,211,238,0.1));
+            border-radius: 50%;
+            filter: blur(2px);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            border-radius: 999px;
+            background: rgba(59,130,246,0.12);
+            border: 1px solid rgba(96,165,250,0.28);
+            color: #93c5fd;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 28px;
+        }
+
+        .info-panel h1 {
+            font-size: clamp(36px, 5vw, 62px);
+            line-height: 1.05;
+            margin: 0;
+            letter-spacing: -1.5px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #60a5fa, #22d3ee);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .info-panel p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            font-size: 16px;
+            max-width: 620px;
+            margin: 24px 0 0;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 38px;
+        }
+
+        .feature {
+            padding: 18px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.055);
+            border: 1px solid rgba(148,163,184,0.14);
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .feature h3 {
+            margin: 0 0 6px;
+            font-size: 15px;
+        }
+
+        .feature span {
+            color: #94a3b8;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .login-card {
+            padding: 38px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .admin-avatar {
+            width: 82px;
+            height: 82px;
+            margin: 0 auto 16px;
+            border-radius: 24px;
+            background:
+                linear-gradient(135deg, rgba(59,130,246,0.95), rgba(34,211,238,0.95));
+            display: grid;
+            place-items: center;
+            font-size: 34px;
+            box-shadow: 0 18px 40px rgba(37,99,235,0.35);
+        }
+
+        .login-header h2 {
+            margin: 0;
+            font-size: 30px;
+            letter-spacing: -0.5px;
+        }
+
+        .login-header p {
+            margin: 8px 0 0;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-box {
+            position: relative;
+        }
+
+        .input-box span {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #60a5fa;
+            font-size: 18px;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 15px 16px 15px 48px;
+            border-radius: 16px;
+            border: 1px solid rgba(148,163,184,0.22);
+            background: rgba(2,6,23,0.55);
+            color: white;
+            outline: none;
+            font-size: 15px;
+            transition: 0.25s ease;
+        }
+
+        .input-box input::placeholder {
+            color: #64748b;
+        }
+
+        .input-box input:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 4px rgba(96,165,250,0.12);
+            background: rgba(2,6,23,0.8);
+        }
+
+        .login-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 15px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 18px 35px rgba(37,99,235,0.28);
+            transition: 0.25s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 22px 45px rgba(37,99,235,0.38);
+        }
+
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+
+        .message {
+            min-height: 22px;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .message.error {
+            color: #fca5a5;
+        }
+
+        .message.success {
+            color: #86efac;
+        }
+
+        .back-link {
+            margin-top: 22px;
+            text-align: center;
+        }
+
+        .back-link a {
+            color: #93c5fd;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-link a:hover {
+            color: #bfdbfe;
+        }
+
+        @media (max-width: 900px) {
+            .page {
+                grid-template-columns: 1fr;
+                max-width: 560px;
+            }
+
+            .info-panel {
+                min-height: auto;
+                padding: 32px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 16px;
+                align-items: flex-start;
+            }
+
+            .info-panel,
+            .login-card {
+                border-radius: 22px;
+            }
+
+            .info-panel {
+                padding: 26px;
+            }
+
+            .login-card {
+                padding: 26px;
+            }
+
+            .login-header h2 {
+                font-size: 25px;
+            }
+
+            .admin-avatar {
+                width: 70px;
+                height: 70px;
+                border-radius: 20px;
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="page">
+
+        <section class="info-panel">
+
+            <div class="badge">
+                🛡️ AI Complaint Admin Portal
+            </div>
+
+            <h1>
+                Manage campus
+                <span class="gradient-text">
+                    complaints
+                </span>
+                smarter.
+            </h1>
+
+            <p>
+                Secure admin access for reviewing student complaints,
+                updating complaint status, sending email notifications,
+                and monitoring complaint categories in one place.
+            </p>
+
+            <div class="features">
+
+                <div class="feature">
+                    <div class="feature-icon">
+                        📊
+                    </div>
+                    <h3>
+                        Dashboard Control
+                    </h3>
+                    <span>
+                        Track pending, accepted, rejected and resolved complaints.
+                    </span>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">
+                        📩
+                    </div>
+                    <h3>
+                        Email Updates
+                    </h3>
+                    <span>
+                        Notify users automatically after admin action.
+                    </span>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">
+                        🌐
+                    </div>
+                    <h3>
+                        Language Support
+                    </h3>
+                    <span>
+                        Translate complaints into selected languages.
+                    </span>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">
+                        🔐
+                    </div>
+                    <h3>
+                        Secure Access
+                    </h3>
+                    <span>
+                        Only verified admin users can access dashboard.
+                    </span>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="login-card">
+
+            <div class="login-header">
+
+                <div class="admin-avatar">
+                    👨‍💼
+                </div>
+
+                <h2>
+                    Admin Login
+                </h2>
+
+                <p>
+                    Enter your admin credentials to continue
+                </p>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+                    Username
+                </label>
+
+                <div class="input-box">
+                    <span>
+                        👤
+                    </span>
+
+                    <input
+                        id="username"
+                        type="text"
+                        placeholder="Enter username"
+                        autocomplete="username">
+                </div>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+                    Password
+                </label>
+
+                <div class="input-box">
+                    <span>
+                        🔑
+                    </span>
+
+                    <input
+                        id="password"
+                        type="password"
+                        placeholder="Enter password"
+                        autocomplete="current-password">
+                </div>
+
+            </div>
+
+            <button
+                class="login-btn"
+                onclick="login()">
+                Login to Dashboard
+            </button>
+
+            <div
+                id="message"
+                class="message">
+            </div>
+
+            <div class="back-link">
+                <a href="/">
+                    ← Back to Home
+                </a>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        function login() {
+
+            const username =
+            document.getElementById("username").value.trim();
+
+            const password =
+            document.getElementById("password").value.trim();
+
+            const message =
+            document.getElementById("message");
+
+            message.className =
+            "message";
+
+            message.innerText =
+            "";
+
+            if (!username || !password) {
+
+                message.classList.add("error");
+
+                message.innerText =
+                "Please enter username and password.";
+
+                return;
+            }
+
+            fetch("/admin_login", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+
+            })
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                console.log("ADMIN LOGIN:", data);
+
+                if (data.status === "success") {
+
+                    localStorage.setItem("user", "Admin");
+                    localStorage.setItem("role", "admin");
+
+                    message.classList.add("success");
+
+                    message.innerText =
+                    "Login successful. Redirecting...";
+
+                    setTimeout(() => {
+
+                        window.location.href =
+                        "/admin_dashboard";
+
+                    }, 600);
+
+                } else if (data.status === "missing") {
+
+                    message.classList.add("error");
+
+                    message.innerText =
+                    "Username and password required.";
+
+                } else if (data.status === "error") {
+
+                    message.classList.add("error");
+
+                    message.innerText =
+                    "Server error: " + data.message;
+
+                } else {
+
+                    message.classList.add("error");
+
+                    message.innerText =
+                    "Invalid admin username or password.";
+                }
+
+            })
+
+            .catch(error => {
+
+                console.log("ADMIN LOGIN ERROR:", error);
+
+                message.classList.add("error");
+
+                message.innerText =
+                "Server error. Please try again.";
+            });
+        }
+
+        document.addEventListener("keydown", function(e) {
+
+            if (e.key === "Enter") {
+
+                login();
+            }
+
+        });
+    </script>
+
+</body>
+</html>
